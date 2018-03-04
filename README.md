@@ -4,6 +4,40 @@
 Solves proof of work to mine supported ERC20 tokens.  
 
 
+## 2.0.0 Development Notes  - Adds GPU mining
+
+1. Uses gcc 9
+2. Uses nvcc 9 (nvidia driver and build tools for cuda)
+3. A single cpp addon is used to mine with cpu and gpu, it is named cpuminer for now
+4. The function 'sethardwaretype' switches the mining loop within
+
+
+
+Commands :
+
+- mine
+- pool mine
+- gpumine  *uses gpu*
+- pool gpumine *uses gpu*
+
+
+
+INSTRUCTIONS : FOLLOW THESE STEPS TO TEST
+nvm use 8
+npm run build
+node index.js
+pool gpumine
+
+
+
+
+
+
+
+
+
+
+
 
 ### Update 1.5.23 - 1000X CPU Pool Mining
 
