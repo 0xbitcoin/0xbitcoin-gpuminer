@@ -317,7 +317,7 @@ module.exports =  {
     {
 
       var hashes = CPPMiner.hashes();
-      console.log('hashes:', hashes )
+    //  console.log('hashes:', hashes )
         console.log('Hash rate: ' + parseInt( hashes / PRINT_STATS_TIMEOUT) + " kH/s");
     }
 
