@@ -12,6 +12,7 @@
 
 #include <thread>
 #include <string>
+using namespace std;
 
 class CpuMiner
 {
