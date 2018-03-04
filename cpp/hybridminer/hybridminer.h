@@ -5,10 +5,12 @@
 
 
 
-#ifndef  _CPUMINER_H_
-#define  _CPUMINER_H_
+#ifndef  _HYBRIDMINER_H_
+#define  _HYBRIDMINER_H_
 
-#include "solver.h"
+#include "cpusolver.h"
+
+#include "gpusolver.h"
 
 #include <thread>
 #include <string>
@@ -34,16 +36,16 @@ public:
   std::string solution() const;
 
 private:
-  void thr_func(Solver& solver);
+  void thr_func(CPUSolver& solver);
 
-  void solutionFound(Solver::bytes_t const& solution);
+  void solutionFound(CPUSolver::bytes_t const& solution);
 
   //set a var in the solver !!
 private:
-  void set(void (Solver::*fn)(std::string const&), std::string const& p);
+  void set(void (CPUSolver::*fn)(std::string const&), std::string const& p);
 
 private:
-  std::vector<Solver> m_solvers;
+  std::vector<CPUSolver> m_solvers;
   std::vector<std::thread> m_threads;
 
   std::mutex m_solution_mutex;

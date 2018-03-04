@@ -104,8 +104,8 @@ namespace miner {
   // Get the number of hashes performed until now
   //  and reset it to 0
   NAN_METHOD(hashes) {
-    uint32_t const value = Solver::hashes;
-    Solver::hashes = 0;
+    uint32_t const value = CPUSolver::hashes;
+    CPUSolver::hashes = 0;
     info.GetReturnValue().Set(value);
   }
 

@@ -11,10 +11,11 @@ using namespace std;
 
 #include "hybridminer.h"
 
+// What is this code doing ?
 HybridMiner::HybridMiner() noexcept :
   m_solvers(std::thread::hardware_concurrency()),
   m_threads(std::thread::hardware_concurrency()),
-  m_solution(Solver::UINT256_LENGTH),
+  m_solution(CPUSolver::UINT256_LENGTH),
   m_bSolutionFound(false),
   m_bExit(false)
 
@@ -38,29 +39,28 @@ HybridMiner::~HybridMiner()
   }
 }
 
+//set the hardware type to 'cpu' or 'gpu'
 void HybridMiner::setHardwareType(std::string const& hardwareType)
 {
   cout << "Setting hardware type: ";
-
-
-   cout << (m_hardwareType = hardwareType);
+  cout << (m_hardwareType = hardwareType);
 
 }
 
 
 void HybridMiner::setChallengeNumber(std::string const& challengeNumber)
 {
-  set(&Solver::setChallenge, challengeNumber);
+  set(&CPUSolver::setChallenge, challengeNumber);
 }
 
 void HybridMiner::setDifficultyTarget(std::string const& difficultyTarget)
 {
-  set(&Solver::setTarget, difficultyTarget);
+  set(&CPUSolver::setTarget, difficultyTarget);
 }
 
 void HybridMiner::setMinerAddress(std::string const& minerAddress)
 {
-  set(&Solver::setAddress, minerAddress);
+  set(&CPUSolver::setAddress, minerAddress);
 }
 
 // This is a the "main" thread of execution
@@ -81,13 +81,13 @@ void HybridMiner::stop()
   m_bExit = true;
 }
 
-void HybridMiner::thr_func(Solver& solver)
+void HybridMiner::thr_func(CPUSolver& solver)
 {
   std::random_device r;
   std::mt19937_64 gen(r());
   std::uniform_int_distribution<> dist(0, 0xffffffff);
 
-  Solver::bytes_t solution(Solver::UINT256_LENGTH);
+  CPUSolver::bytes_t solution(CPUSolver::UINT256_LENGTH);
 
   while (!m_bExit)
   {
@@ -110,7 +110,7 @@ void HybridMiner::thr_func(Solver& solver)
 
 // When this function terminates, the "main" thread run() should end
 //  and the caller can check the solution()
-void HybridMiner::solutionFound(Solver::bytes_t const& solution)
+void HybridMiner::solutionFound(CPUSolver::bytes_t const& solution)
 {
   {
     std::lock_guard<std::mutex> g(m_solution_mutex);
@@ -121,7 +121,7 @@ void HybridMiner::solutionFound(Solver::bytes_t const& solution)
   stop();
 }
 
-void HybridMiner::set(void (Solver::*fn)(std::string const&), std::string const& p)
+void HybridMiner::set(void (CPUSolver::*fn)(std::string const&), std::string const& p)
 {
   for (auto&& i : m_solvers)
     (i.*fn)(p);
@@ -129,5 +129,5 @@ void HybridMiner::set(void (Solver::*fn)(std::string const&), std::string const&
 
 std::string HybridMiner::solution() const
 {
-  return m_bSolutionFound ? ("0x" + Solver::bytesToString(m_solution)) : std::string();
+  return m_bSolutionFound ? ("0x" + CPUSolver::bytesToString(m_solution)) : std::string();
 }
