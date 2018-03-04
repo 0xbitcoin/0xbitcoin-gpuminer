@@ -8,7 +8,7 @@
 
 #include <nan.h>
 
-#include "cpuminer.h"
+#include "hybridminer.h"
 
 
 namespace miner {
@@ -16,12 +16,12 @@ namespace miner {
   using namespace Nan;
 
 
-  ::CpuMiner* cpuminer = nullptr;
+  ::HybridMiner* hybridminer = nullptr;
 
 
   //call C++ dtors:
   void cleanup(void* p) {
-    delete reinterpret_cast<CpuMiner*>(p);
+    delete reinterpret_cast<HybridMiner*>(p);
   }
 
 
@@ -35,10 +35,10 @@ namespace miner {
 
       // This function runs in a thread spawned by NAN
       void Execute () {
-        if (cpuminer) {
-          cpuminer->run(); // blocking call
+        if (hybridminer) {
+          hybridminer->run(); // blocking call
         } else {
-          SetErrorMessage("{error: 'no cpuminer!'}");
+          SetErrorMessage("{error: 'no hybridminer!'}");
         }
       }
 
@@ -51,7 +51,7 @@ namespace miner {
 
         v8::Local<v8::Value> argv[] = {
           Null(),
-          New<v8::String>(cpuminer->solution()).ToLocalChecked()
+          New<v8::String>(hybridminer->solution()).ToLocalChecked()
         };
 
         callback->Call(2, argv);
@@ -67,14 +67,14 @@ namespace miner {
   }
 
   NAN_METHOD(stop) {
-    cpuminer->stop();
+    hybridminer->stop();
     info.GetReturnValue().SetUndefined();
   }
 
   NAN_METHOD(setHardwareType) {
     MaybeLocal<v8::String> inp = Nan::To<v8::String>(info[0]);
     if (!inp.IsEmpty()) {
-      cpuminer->setHardwareType(std::string(*Nan::Utf8String(inp.ToLocalChecked())));
+      hybridminer->setHardwareType(std::string(*Nan::Utf8String(inp.ToLocalChecked())));
     }
     info.GetReturnValue().SetUndefined();
   }
@@ -82,21 +82,21 @@ namespace miner {
   NAN_METHOD(setChallengeNumber) {
     MaybeLocal<v8::String> inp = Nan::To<v8::String>(info[0]);
     if (!inp.IsEmpty()) {
-      cpuminer->setChallengeNumber(std::string(*Nan::Utf8String(inp.ToLocalChecked())));
+      hybridminer->setChallengeNumber(std::string(*Nan::Utf8String(inp.ToLocalChecked())));
     }
     info.GetReturnValue().SetUndefined();
   }
   NAN_METHOD(setDifficultyTarget) {
     MaybeLocal<v8::String> inp = Nan::To<v8::String>(info[0]);
     if (!inp.IsEmpty()) {
-      cpuminer->setDifficultyTarget(std::string(*Nan::Utf8String(inp.ToLocalChecked())));
+      hybridminer->setDifficultyTarget(std::string(*Nan::Utf8String(inp.ToLocalChecked())));
     }
     info.GetReturnValue().SetUndefined();
   }
   NAN_METHOD(setMinerAddress) {
     MaybeLocal<v8::String> inp = Nan::To<v8::String>(info[0]);
     if (!inp.IsEmpty()) {
-      cpuminer->setMinerAddress(std::string(*Nan::Utf8String(inp.ToLocalChecked())));
+      hybridminer->setMinerAddress(std::string(*Nan::Utf8String(inp.ToLocalChecked())));
     }
     info.GetReturnValue().SetUndefined();
   }
@@ -144,9 +144,9 @@ namespace miner {
       , New<v8::FunctionTemplate>(hashes)->GetFunction()
     );
 
-    cpuminer = new CpuMiner;
+    hybridminer = new HybridMiner;
 
-    node::AtExit(cleanup, cpuminer);
+    node::AtExit(cleanup, hybridminer);
   }
 
   NODE_MODULE(cpumining, Init)

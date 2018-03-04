@@ -4,18 +4,22 @@
     {'variables': {'obj': 'o'}}]],
 
 "targets": [
- 
+
 
  {
-      "target_name": "cpuminer",
+      "target_name": "hybridminer",
       "sources": [
-        "cpp/cpuminer/addon.cc",
-        "cpp/cpuminer/cpuminer.cpp",
-        "cpp/cpuminer/solver.cpp",
-        "cpp/cpuminer/sha3.c"
+        "cpp/hybridminer/addon.cc",
+        "cpp/hybridminer/hybridminer.cpp",
+        "cpp/hybridminer/solver.cpp",
+        "cpp/hybridminer/sha3.c"
       ],
       'cflags_cc+': [ '-march=native', '-O3', '-std=c++17' ],
       "include_dirs": ["<!(node -e \"require('nan')\")"],
+
+
+
+
        'rules': [{
            'extension': 'cu',
            'inputs': ['<(RULE_INPUT_PATH)'],

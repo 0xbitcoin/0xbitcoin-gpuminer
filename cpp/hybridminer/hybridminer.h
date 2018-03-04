@@ -14,11 +14,11 @@
 #include <string>
 using namespace std;
 
-class CpuMiner
+class HybridMiner
 {
 public:
-  CpuMiner() noexcept;
-  ~CpuMiner();
+  HybridMiner() noexcept;
+  ~HybridMiner();
 
 public:
   void setChallengeNumber(std::string const& challengeNumber);

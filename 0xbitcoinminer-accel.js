@@ -8,7 +8,7 @@ var debugLogger = require('./lib/debug-logger')
 
 var tokenContractJSON = require('./contracts/_0xBitcoinToken.json');
 
-var CPPMiner = require('./build/Release/cpuminer');
+var CPPMiner = require('./build/Release/hybridminer');
 
 
 //only load this if selecting 'gpu mine!!!'

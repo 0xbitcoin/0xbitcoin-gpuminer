@@ -1,4 +1,4 @@
-#include "cpuminer.h"
+
 
 #include <chrono>
 #include <random>
@@ -6,9 +6,12 @@
 
 //allow print out
 #include <iostream>
+#include <string>
 using namespace std;
 
-CpuMiner::CpuMiner() noexcept :
+#include "hybridminer.h"
+
+HybridMiner::HybridMiner() noexcept :
   m_solvers(std::thread::hardware_concurrency()),
   m_threads(std::thread::hardware_concurrency()),
   m_solution(Solver::UINT256_LENGTH),
@@ -20,7 +23,7 @@ CpuMiner::CpuMiner() noexcept :
 
 
 
-CpuMiner::~CpuMiner()
+HybridMiner::~HybridMiner()
 {
   stop();
 
@@ -35,35 +38,33 @@ CpuMiner::~CpuMiner()
   }
 }
 
-void CpuMiner::setHardwareType(std::string const& hardwareType)
+void HybridMiner::setHardwareType(std::string const& hardwareType)
 {
-   cout << "------- Using hardware type: ---------- \n";
-   cout << "\n";
+  cout << "Setting hardware type: ";
+ 
 
-   cout << (m_hardwareType = hardwareType);
+   cout << m_hardwareType = hardwareType;
 
-   cout << "\n";
-   cout << "------- -------------------- ---------- \n";
 }
 
 
-void CpuMiner::setChallengeNumber(std::string const& challengeNumber)
+void HybridMiner::setChallengeNumber(std::string const& challengeNumber)
 {
   set(&Solver::setChallenge, challengeNumber);
 }
 
-void CpuMiner::setDifficultyTarget(std::string const& difficultyTarget)
+void HybridMiner::setDifficultyTarget(std::string const& difficultyTarget)
 {
   set(&Solver::setTarget, difficultyTarget);
 }
 
-void CpuMiner::setMinerAddress(std::string const& minerAddress)
+void HybridMiner::setMinerAddress(std::string const& minerAddress)
 {
   set(&Solver::setAddress, minerAddress);
 }
 
 // This is a the "main" thread of execution
-void CpuMiner::run()
+void HybridMiner::run()
 {
   m_bExit = m_bSolutionFound = false;
 
@@ -75,12 +76,12 @@ void CpuMiner::run()
     thr.join();
 }
 
-void CpuMiner::stop()
+void HybridMiner::stop()
 {
   m_bExit = true;
 }
 
-void CpuMiner::thr_func(Solver& solver)
+void HybridMiner::thr_func(Solver& solver)
 {
   std::random_device r;
   std::mt19937_64 gen(r());
@@ -109,7 +110,7 @@ void CpuMiner::thr_func(Solver& solver)
 
 // When this function terminates, the "main" thread run() should end
 //  and the caller can check the solution()
-void CpuMiner::solutionFound(Solver::bytes_t const& solution)
+void HybridMiner::solutionFound(Solver::bytes_t const& solution)
 {
   {
     std::lock_guard<std::mutex> g(m_solution_mutex);
@@ -117,16 +118,16 @@ void CpuMiner::solutionFound(Solver::bytes_t const& solution)
     m_bSolutionFound = true;
   }
 
-  stop();  //keep going
+  stop();
 }
 
-void CpuMiner::set(void (Solver::*fn)(std::string const&), std::string const& p)
+void HybridMiner::set(void (Solver::*fn)(std::string const&), std::string const& p)
 {
   for (auto&& i : m_solvers)
     (i.*fn)(p);
 }
 
-std::string CpuMiner::solution() const
+std::string HybridMiner::solution() const
 {
   return m_bSolutionFound ? ("0x" + Solver::bytesToString(m_solution)) : std::string();
 }

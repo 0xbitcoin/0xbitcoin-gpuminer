@@ -303,8 +303,8 @@ $(obj).$(TOOLSET)/%.o: $(obj)/%.s FORCE_DO_CMD
 
 ifeq ($(strip $(foreach prefix,$(NO_LOAD),\
     $(findstring $(join ^,$(prefix)),\
-                 $(join ^,cpuminer.target.mk)))),)
-  include cpuminer.target.mk
+                 $(join ^,hybridminer.target.mk)))),)
+  include hybridminer.target.mk
 endif
 
 quiet_cmd_regen_makefile = ACTION Regenerating $@
