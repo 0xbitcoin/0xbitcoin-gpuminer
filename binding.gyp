@@ -30,10 +30,10 @@
            'process_outputs_as_sources': 1,
            'action': [
               'nvcc',
-               '-ccbin', 'gcc',
-      	'-Xcompiler',
-      	'-fpic',
-      	'-c',
+               '-ccbin',  'gcc',
+              	'-Xcompiler',
+              	'-fpic',
+              	'-c',
               '-o',
               '<@(_outputs)',
               '<@(_inputs)'
