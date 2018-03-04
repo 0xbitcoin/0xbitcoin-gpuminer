@@ -11,7 +11,7 @@ using namespace std;
 
 #include "hybridminer.h"
 
-// What is this code doing ?
+// What is this code doing ? defining a new instance of a class ?
 HybridMiner::HybridMiner() noexcept :
   m_solvers(std::thread::hardware_concurrency()),
   m_threads(std::thread::hardware_concurrency()),
@@ -50,17 +50,32 @@ void HybridMiner::setHardwareType(std::string const& hardwareType)
 
 void HybridMiner::setChallengeNumber(std::string const& challengeNumber)
 {
-  set(&CPUSolver::setChallenge, challengeNumber);
+  if(strcmp(m_hardwareType.c_str(), "cuda") == 0)
+  {
+     gpuSolver.setChallenge(challengeNumber);
+  }else{
+    set(&CPUSolver::setChallenge, challengeNumber);
+  }
 }
 
 void HybridMiner::setDifficultyTarget(std::string const& difficultyTarget)
 {
-  set(&CPUSolver::setTarget, difficultyTarget);
+  if(strcmp(m_hardwareType.c_str(), "cuda") == 0)
+  {
+    gpuSolver.setTarget(difficultyTarget);
+  }else{
+    set(&CPUSolver::setTarget, difficultyTarget);
+  }
 }
 
 void HybridMiner::setMinerAddress(std::string const& minerAddress)
 {
-  set(&CPUSolver::setAddress, minerAddress);
+  if(strcmp(m_hardwareType.c_str(), "cuda") == 0)
+  {
+    gpuSolver.setAddress(minerAddress);
+  }else{
+    set(&CPUSolver::setAddress, minerAddress);
+  }
 }
 
 // This is a the "main" thread of execution
@@ -69,8 +84,18 @@ void HybridMiner::run()
 
   if(  strcmp(m_hardwareType.c_str(), "cuda") == 0   )
   {
-    cout << "--Starting miner loop using CUDA-- \n";
+    cout << "--Starting mining loop using CUDA-- \n";
+
+
+
+    //fill me in ! run  gpu solver
+
+
+
+
+
   }else{
+    cout << "--Starting mining loop using CPU-- \n";
 
     m_bExit = m_bSolutionFound = false;
 
@@ -131,6 +156,7 @@ void HybridMiner::solutionFound(CPUSolver::bytes_t const& solution)
   stop();
 }
 
+//edit a variable within each of the solvers
 void HybridMiner::set(void (CPUSolver::*fn)(std::string const&), std::string const& p)
 {
   for (auto&& i : m_solvers)

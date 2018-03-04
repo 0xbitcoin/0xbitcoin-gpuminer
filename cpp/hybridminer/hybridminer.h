@@ -49,7 +49,11 @@ private:
   std::vector<std::thread> m_threads;
 
   std::mutex m_solution_mutex;
-  Solver::bytes_t m_solution;
+
+  CPUSolver::bytes_t m_solution; //make one for GPU ?
+
+  GPUSolver gpuSolver;
+
   bool m_bSolutionFound;
 
   std::string m_hardwareType;

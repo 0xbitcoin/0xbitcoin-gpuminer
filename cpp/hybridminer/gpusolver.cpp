@@ -1,5 +1,6 @@
-#include "solver.h"
-#include "sha3.h"
+#include "gpusolver.h"
+
+#include "sha3.cu"
 
 #include <assert.h>
 
@@ -57,10 +58,10 @@ static void HexToBytes(std::string const& hex, uint8_t bytes[])
 
 
 // static
-std::atomic<uint32_t> Solver::hashes(0u); // statistics only
+std::atomic<uint32_t> GPUSolver::hashes(0u); // statistics only
 
 
-Solver::Solver() noexcept :
+GPUSolver::GPUSolver() noexcept :
   m_address(ADDRESS_LENGTH),
   m_challenge(UINT256_LENGTH),
   m_target(UINT256_LENGTH),
@@ -71,21 +72,21 @@ Solver::Solver() noexcept :
   m_target_ready(false)
 { }
 
-void Solver::setAddress(std::string const& addr)
+void GPUSolver::setAddress(std::string const& addr)
 {
   assert(addr.length() == (ADDRESS_LENGTH * 2 + 2));
   hexToBytes(addr, m_address);
   updateBuffer();
 }
 
-void Solver::setChallenge(std::string const& chal)
+void GPUSolver::setChallenge(std::string const& chal)
 {
   assert(chal.length() == (UINT256_LENGTH * 2 + 2));
   hexToBytes(chal, m_challenge);
   updateBuffer();
 }
 
-void Solver::setTarget(std::string const& target)
+void GPUSolver::setTarget(std::string const& target)
 {
   assert(target.length() <= (UINT256_LENGTH * 2 + 2));
   std::string const t(static_cast<std::string::size_type>(UINT256_LENGTH * 2 + 2) - target.length(), '0');
@@ -100,7 +101,7 @@ void Solver::setTarget(std::string const& target)
 }
 
 // Buffer order: 1-challenge 2-ethAddress 3-solution
-void Solver::updateBuffer()
+void GPUSolver::updateBuffer()
 {
   // The idea is to have a double-buffer system in order not to try
   //  to acquire a lock on each hash() loop
@@ -112,7 +113,7 @@ void Solver::updateBuffer()
   m_buffer_ready = true;
 }
 
-void Solver::hash(bytes_t const& solution, bytes_t& digest)
+void GPUSolver::hash(bytes_t const& solution, bytes_t& digest)
 {
   if (m_buffer_ready)
   {
@@ -125,7 +126,7 @@ void Solver::hash(bytes_t const& solution, bytes_t& digest)
   keccak_256(&digest[0], digest.size(), &m_buffer[0], m_buffer.size());
 }
 
-bool Solver::trySolution(bytes_t const& solution)
+bool GPUSolver::trySolution(bytes_t const& solution)
 {
   bytes_t digest(UINT256_LENGTH);
   hash(solution, digest);
@@ -143,7 +144,7 @@ bool Solver::trySolution(bytes_t const& solution)
 }
 
 // static
-void Solver::hexToBytes(std::string const& hex, bytes_t& bytes)
+void GPUSolver::hexToBytes(std::string const& hex, bytes_t& bytes)
 {
   assert(hex.length() % 2 == 0);
   assert(bytes.size() == (hex.length() / 2 - 1));
@@ -151,7 +152,7 @@ void Solver::hexToBytes(std::string const& hex, bytes_t& bytes)
 }
 
 // static
-std::string Solver::bytesToString(bytes_t const& buffer)
+std::string GPUSolver::bytesToString(bytes_t const& buffer)
 {
   std::string output;
   output.reserve(buffer.size() * 2 + 1);
@@ -163,7 +164,7 @@ std::string Solver::bytesToString(bytes_t const& buffer)
 }
 
 // static
-bool Solver::lte(bytes_t const& left, bytes_t const& right)
+bool GPUSolver::lte(bytes_t const& left, bytes_t const& right)
 {
   assert(left.size() == right.size());
 
