@@ -52,7 +52,7 @@ private:
 
   CPUSolver::bytes_t m_solution; //make one for GPU ?
 
-  GPUSolver gpuSolver;
+//  GPUSolver gpuSolver;
 
   bool m_bSolutionFound;
 
