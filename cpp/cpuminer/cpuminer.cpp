@@ -4,6 +4,9 @@
 #include <random>
 #include <thread>
 
+//allow print out
+#include <iostream>
+using namespace std;
 
 CpuMiner::CpuMiner() noexcept :
   m_solvers(std::thread::hardware_concurrency()),
@@ -11,8 +14,11 @@ CpuMiner::CpuMiner() noexcept :
   m_solution(Solver::UINT256_LENGTH),
   m_bSolutionFound(false),
   m_bExit(false)
+
 {
 }
+
+
 
 CpuMiner::~CpuMiner()
 {
@@ -28,6 +34,18 @@ CpuMiner::~CpuMiner()
       std::this_thread::sleep_for(std::chrono::milliseconds(50u));
   }
 }
+
+void CpuMiner::setHardwareType(std::string const& hardwareType)
+{
+  cout << "Setting hardware type";
+
+    //HALP
+   m_hardwareType = hardwareType;
+
+//  cout << m_hardwareType;
+
+}
+
 
 void CpuMiner::setChallengeNumber(std::string const& challengeNumber)
 {
@@ -99,7 +117,7 @@ void CpuMiner::solutionFound(Solver::bytes_t const& solution)
     m_bSolutionFound = true;
   }
 
-  stop();  //keep going 
+  stop();  //keep going
 }
 
 void CpuMiner::set(void (Solver::*fn)(std::string const&), std::string const& p)
