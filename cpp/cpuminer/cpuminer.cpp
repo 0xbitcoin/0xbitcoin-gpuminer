@@ -37,13 +37,15 @@ CpuMiner::~CpuMiner()
 
 void CpuMiner::setHardwareType(std::string const& hardwareType)
 {
-  cout << "Setting hardware type";
-
+   cout << "------- Using hardware type: ---------- \n";
+   cout << "\n";
     //HALP
    m_hardwareType = hardwareType;
 
-//  cout << m_hardwareType;
+   cout << m_hardwareType;
 
+   cout << "\n";
+   cout << "------- -------------------- ---------- \n";
 }
 
 
