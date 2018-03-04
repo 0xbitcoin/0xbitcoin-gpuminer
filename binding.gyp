@@ -12,7 +12,8 @@
         "cpp/hybridminer/addon.cc",
         "cpp/hybridminer/hybridminer.cpp",
         "cpp/hybridminer/solver.cpp",
-        "cpp/hybridminer/sha3.c"
+        "cpp/hybridminer/sha3.c",
+        "cpp/hybridminer/sha3.cu",
       ],
       'cflags_cc+': [ '-march=native', '-O3', '-std=c++17' ],
       "include_dirs": ["<!(node -e \"require('nan')\")"],

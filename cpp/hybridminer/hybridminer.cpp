@@ -41,9 +41,9 @@ HybridMiner::~HybridMiner()
 void HybridMiner::setHardwareType(std::string const& hardwareType)
 {
   cout << "Setting hardware type: ";
- 
 
-   cout << m_hardwareType = hardwareType;
+
+   cout << (m_hardwareType = hardwareType);
 
 }
 
