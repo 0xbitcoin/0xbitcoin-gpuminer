@@ -6,7 +6,7 @@
 
 //allow print out
 #include <iostream>
-#include <string>
+#include <string.h>
 using namespace std;
 
 #include "hybridminer.h"
@@ -66,14 +66,24 @@ void HybridMiner::setMinerAddress(std::string const& minerAddress)
 // This is a the "main" thread of execution
 void HybridMiner::run()
 {
-  m_bExit = m_bSolutionFound = false;
 
-  // These are the Solver threads
-  for (size_t x = 0; x < m_threads.size(); ++x)
-    m_threads[x] = std::thread([&, x] { this->thr_func(this->m_solvers[x]); });
+  if(  strcmp(m_hardwareType.c_str(), "cuda") == 0   )
+  {
+    cout << "--Starting miner loop using CUDA-- \n";
+  }else{
 
-  for (auto&& thr: m_threads)
-    thr.join();
+    m_bExit = m_bSolutionFound = false;
+
+    // These are the Solver threads
+    for (size_t x = 0; x < m_threads.size(); ++x)
+      m_threads[x] = std::thread([&, x] { this->thr_func(this->m_solvers[x]); });
+
+    for (auto&& thr: m_threads)
+      thr.join();
+
+  }
+
+
 }
 
 void HybridMiner::stop()

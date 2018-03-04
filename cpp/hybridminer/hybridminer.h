@@ -13,7 +13,7 @@
 #include "gpusolver.h"
 
 #include <thread>
-#include <string>
+#include <string.h>
 using namespace std;
 
 class HybridMiner

@@ -103,6 +103,8 @@ namespace miner {
 
   // Get the number of hashes performed until now
   //  and reset it to 0
+
+  //need to make one of these for the gpu solver.. ?
   NAN_METHOD(hashes) {
     uint32_t const value = CPUSolver::hashes;
     CPUSolver::hashes = 0;
