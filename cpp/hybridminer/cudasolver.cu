@@ -157,23 +157,28 @@ CUDASolver::bytes_t CUDASolver::findSolution( )
   cout << "CUDA found a solution :) \n ";
 
 
+  //grab the last 32 items in the array !
 
   //print(repr(base64.b16encode(hashme[-32:]))[2:-1])
 
   //each char[]..there are 84... is a hex number ...
 
-/*  cout << "\n";
-  for (int i = 0; i < 84; ++i)
+  char * x_solution = char[32]
+
+   cout << "\n";
+  for (int i = 52; i < 84; ++i)
   {
    //  cout << s_solution[i];
      std::cout << std::hex << (int)s_solution[i];
-  }*/
+
+     x_solution[i] = s_solution[i-52];
+  }
 
   cout << "\n";
 
-    cout << "hexstr: \n";
+  cout << "hexstr: \n";
 
-  cout << hexStr(s_solution,84);
+  cout << hexStr(x_solution,32);
 
   cout << "\n";
 
@@ -181,7 +186,7 @@ CUDASolver::bytes_t CUDASolver::findSolution( )
 
 
   std::string holyFuk;
-  holyFuk.assign(s_solution, 84);
+  holyFuk.assign(x_solution, 32);
 
   cout << "holyFuk: " << holyFuk << "\n";
 
