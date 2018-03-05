@@ -90,19 +90,21 @@ void HybridMiner::run()
 
     //fill me in ! run  gpu solver
 
-     CUDASolver::bytes_t solution(CUDASolver::UINT256_LENGTH);
+     CUDASolver::bytes_t solutionBytes(CUDASolver::UINT256_LENGTH);
 
 
      //this is core dumping - maybe when you dont have a GPU?
      cudaSolver.init();
 
 
-     solution = cudaSolver.findSolution(solution);
+     solutionBytes = cudaSolver.findSolution( );
      cout << "--GPU returned a soln ! -- \n";
-  //   cout << (solution);
+
+      std::string solutionString  = CUDASolver::bytesToString( solutionBytes );
+          cout << solutionString;
 
      //This sets m_solution and m_bSolutionFound
-     solutionFound(solution);
+     solutionFound(solutionBytes);
 
 
      //this sets m_bExit true
@@ -150,6 +152,8 @@ void HybridMiner::thr_func(CPUSolver& solver)
 
     if (solver.trySolution(solution))
     {
+
+
       solutionFound(solution);
       break;
     }

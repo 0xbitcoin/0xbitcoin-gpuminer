@@ -141,7 +141,7 @@ void CUDASolver::init()
 }
 
 
-CUDASolver::bytes_t CUDASolver::findSolution(bytes_t const& solution)
+CUDASolver::bytes_t CUDASolver::findSolution( )
 {
   cout << "CUDA is trying to find a solution :) \n ";
 
@@ -170,6 +170,10 @@ CUDASolver::bytes_t CUDASolver::findSolution(bytes_t const& solution)
 // static
 void CUDASolver::hexToBytes(std::string const& hex, bytes_t& bytes)
 {
+
+    cout << "hex to bytes: " << hex << "\n";
+
+
   assert(hex.length() % 2 == 0);
   assert(bytes.size() == (hex.length() / 2 - 1));
   HexToBytes(hex.substr(2), &bytes[0]);
