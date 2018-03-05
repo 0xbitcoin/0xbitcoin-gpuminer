@@ -27,7 +27,7 @@ INSTRUCTIONS : FOLLOW THESE STEPS TO TEST
 nvm use 8
 npm run build
 node index.js
-pool gpumine
+pool mine cuda
 
 
 ** You can manually compile sha3.cu with :
