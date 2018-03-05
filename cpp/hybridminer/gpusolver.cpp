@@ -74,7 +74,7 @@ GPUSolver::GPUSolver() noexcept :
   m_target(UINT256_LENGTH),
   m_target_tmp(UINT256_LENGTH),
   m_buffer(ADDRESS_LENGTH + 2 * UINT256_LENGTH),
-  m_buffer_tmp(ADDRESS_LENGTH + 2 * UINT256_LENGTH),
+  m_buffer_tmp(ADDRESS_LENGTH + 2 * UINT256_LENGTH), //this has something to do with updateBuffer
   m_buffer_ready(false),
   m_target_ready(false)
 { }
@@ -113,6 +113,8 @@ void GPUSolver::setTarget(std::string const& target)
   m_target_ready = true;
 }
 
+
+
 // Buffer order: 1-challenge 2-ethAddress 3-solution
 void GPUSolver::updateBuffer()
 {
@@ -126,12 +128,25 @@ void GPUSolver::updateBuffer()
   m_buffer_ready = true;
 }
 
+bool GPUSolver::findSolution(bytes_t const& solution)
+{
+    cout << "CUDA is trying to find a solution :) \n ";
 
+    //pass these into cuda
+    /*
+    m_address(ADDRESS_LENGTH),
+    m_challenge(UINT256_LENGTH),
+    m_target(UINT256_LENGTH),
+    */
+      //run .cu functions here !!!
+
+      return false;
+}
 
 
 
 /*
-  THSE FUNCTIONS WILL BE DONE IN .cu FILE LOOP - DEFER TO THAT
+  THESE FUNCTIONS WILL BE DONE IN .cu FILE LOOP - DEFER TO THAT
 */
 
 
@@ -187,6 +202,7 @@ std::string GPUSolver::bytesToString(bytes_t const& buffer)
   return output;
 }
 
+/*
 // static
 bool GPUSolver::lte(bytes_t const& left, bytes_t const& right)
 {
@@ -202,3 +218,4 @@ bool GPUSolver::lte(bytes_t const& left, bytes_t const& right)
   }
   return true;
 }
+*/

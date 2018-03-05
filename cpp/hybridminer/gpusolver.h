@@ -26,7 +26,7 @@ public:
   void setTarget(std::string const& target);
 
 public:
-  bool trySolution(bytes_t const& solution);
+  bool findSolution(bytes_t const& solution);
 
 public:
   static void hexToBytes(std::string const& hex, bytes_t& bytes);

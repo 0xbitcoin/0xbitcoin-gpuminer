@@ -52,7 +52,6 @@ void HybridMiner::setChallengeNumber(std::string const& challengeNumber)
 {
   if(strcmp(m_hardwareType.c_str(), "cuda") == 0)
   {
-
      gpuSolver.setChallenge(challengeNumber);
   }else{
     set(&CPUSolver::setChallenge, challengeNumber);
@@ -63,7 +62,6 @@ void HybridMiner::setDifficultyTarget(std::string const& difficultyTarget)
 {
   if(strcmp(m_hardwareType.c_str(), "cuda") == 0)
   {
-
      gpuSolver.setTarget(difficultyTarget);
   }else{
     set(&CPUSolver::setTarget, difficultyTarget);
@@ -74,7 +72,6 @@ void HybridMiner::setMinerAddress(std::string const& minerAddress)
 {
   if(strcmp(m_hardwareType.c_str(), "cuda") == 0)
   {
-    
     gpuSolver.setAddress(minerAddress);
   }else{
     set(&CPUSolver::setAddress, minerAddress);
@@ -90,12 +87,20 @@ void HybridMiner::run()
     cout << "--Starting mining loop using CUDA-- \n";
 
 
-
     //fill me in ! run  gpu solver
 
+     GPUSolver::bytes_t solution(CPUSolver::UINT256_LENGTH);
 
 
+    if (gpuSolver.findSolution(solution))
+    {
+      cout << "--GPU returned a soln ! -- \n";
+      solutionFound(solution);
+     
+    }
 
+
+    // solutionFound(solution);
 
   }else{
     cout << "--Starting mining loop using CPU-- \n";
