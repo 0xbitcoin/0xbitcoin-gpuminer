@@ -6,7 +6,7 @@ Solves proof of work to mine supported ERC20 tokens.
 
 ## 2.0.0 Development Notes  - Adds GPU mining
 
-1. Uses gcc 6
+1. Uses gcc 5  and g++ 5
 2. Uses nvcc 9 (nvidia driver and build tools for cuda)
 3. A single cpp addon is used to mine with cpu and gpu, it is named cpuminer for now
 4. The function 'sethardwaretype' switches the mining loop within

@@ -10,7 +10,7 @@ $(obj).$(TOOLSET)/$(TARGET)/geni/gpusolver.o: $(srcdir)/cpp/hybridminer/gpusolve
 	$(call do_cmd,binding_gyp_hybridminer_target_cuda_on_linux_0)
 
 all_deps += $(obj).$(TOOLSET)/$(TARGET)/geni/gpusolver.o
-cmd_binding_gyp_hybridminer_target_cuda_on_linux_0 = LD_LIBRARY_PATH=$(builddir)/lib.host:$(builddir)/lib.target:$$LD_LIBRARY_PATH; export LD_LIBRARY_PATH; cd $(srcdir)/.; mkdir -p $(obj).$(TOOLSET)/hybridminer/geni; nvcc "-std=c++11" -Xcompiler -fpic -c -o "$(obj).$(TOOLSET)/hybridminer/geni/gpusolver.o" "$(abspath $<)"
+cmd_binding_gyp_hybridminer_target_cuda_on_linux_0 = LD_LIBRARY_PATH=$(builddir)/lib.host:$(builddir)/lib.target:$$LD_LIBRARY_PATH; export LD_LIBRARY_PATH; cd $(srcdir)/.; mkdir -p $(obj).$(TOOLSET)/hybridminer/geni; nvcc -ccbin gcc -Xcompiler -fpic -c -o "$(obj).$(TOOLSET)/hybridminer/geni/gpusolver.o" "$(abspath $<)"
 quiet_cmd_binding_gyp_hybridminer_target_cuda_on_linux_0 = RULE binding_gyp_hybridminer_target_cuda_on_linux_0 $@
 
 rule_binding_gyp_hybridminer_target_cuda_on_linux_outputs := \
@@ -48,6 +48,9 @@ CFLAGS_C_Debug :=
 
 # Flags passed to only C++ files.
 CFLAGS_CC_Debug := \
+	-march=native \
+	-O3 \
+	-std=c++17 \
 	-fno-rtti \
 	-fno-exceptions \
 	-std=gnu++0x
@@ -57,9 +60,9 @@ INCS_Debug := \
 	-I/home/andy/.node-gyp/8.9.4/src \
 	-I/home/andy/.node-gyp/8.9.4/deps/uv/include \
 	-I/home/andy/.node-gyp/8.9.4/deps/v8/include \
-	-I$(CUDA_PATH)/include \
-	-I/usr/local/cuda/include \
-	-I/usr/local/include
+	-I$(srcdir)/node_modules/nan \
+	-I/usr/local/include \
+	-I/usr/local/cuda/include
 
 DEFS_Release := \
 	'-DNODE_GYP_MODULE_NAME=hybridminer' \
@@ -86,6 +89,9 @@ CFLAGS_C_Release :=
 
 # Flags passed to only C++ files.
 CFLAGS_CC_Release := \
+	-march=native \
+	-O3 \
+	-std=c++17 \
 	-fno-rtti \
 	-fno-exceptions \
 	-std=gnu++0x
@@ -95,14 +101,15 @@ INCS_Release := \
 	-I/home/andy/.node-gyp/8.9.4/src \
 	-I/home/andy/.node-gyp/8.9.4/deps/uv/include \
 	-I/home/andy/.node-gyp/8.9.4/deps/v8/include \
-	-I$(CUDA_PATH)/include \
-	-I/usr/local/cuda/include \
-	-I/usr/local/include
+	-I$(srcdir)/node_modules/nan \
+	-I/usr/local/include \
+	-I/usr/local/cuda/include
 
 OBJS := \
 	$(obj).target/$(TARGET)/cpp/hybridminer/addon.o \
 	$(obj).target/$(TARGET)/cpp/hybridminer/hybridminer.o \
-	$(obj).target/$(TARGET)/cpp/hybridminer/cpusolver.o
+	$(obj).target/$(TARGET)/cpp/hybridminer/cpusolver.o \
+	$(obj).target/$(TARGET)/cpp/hybridminer/sha3.o
 
 # Add to the list of files we specially track dependencies for.
 all_deps += $(OBJS)
@@ -121,6 +128,9 @@ $(OBJS): GYP_CXXFLAGS := $(DEFS_$(BUILDTYPE)) $(INCS_$(BUILDTYPE))  $(CFLAGS_$(B
 $(obj).$(TOOLSET)/$(TARGET)/%.o: $(srcdir)/%.cc FORCE_DO_CMD
 	@$(call do_cmd,cxx,1)
 
+$(obj).$(TOOLSET)/$(TARGET)/%.o: $(srcdir)/%.c FORCE_DO_CMD
+	@$(call do_cmd,cc,1)
+
 $(obj).$(TOOLSET)/$(TARGET)/%.o: $(srcdir)/%.cpp FORCE_DO_CMD
 	@$(call do_cmd,cxx,1)
 
@@ -129,11 +139,17 @@ $(obj).$(TOOLSET)/$(TARGET)/%.o: $(srcdir)/%.cpp FORCE_DO_CMD
 $(obj).$(TOOLSET)/$(TARGET)/%.o: $(obj).$(TOOLSET)/%.cc FORCE_DO_CMD
 	@$(call do_cmd,cxx,1)
 
+$(obj).$(TOOLSET)/$(TARGET)/%.o: $(obj).$(TOOLSET)/%.c FORCE_DO_CMD
+	@$(call do_cmd,cc,1)
+
 $(obj).$(TOOLSET)/$(TARGET)/%.o: $(obj).$(TOOLSET)/%.cpp FORCE_DO_CMD
 	@$(call do_cmd,cxx,1)
 
 $(obj).$(TOOLSET)/$(TARGET)/%.o: $(obj)/%.cc FORCE_DO_CMD
 	@$(call do_cmd,cxx,1)
+
+$(obj).$(TOOLSET)/$(TARGET)/%.o: $(obj)/%.c FORCE_DO_CMD
+	@$(call do_cmd,cc,1)
 
 $(obj).$(TOOLSET)/$(TARGET)/%.o: $(obj)/%.cpp FORCE_DO_CMD
 	@$(call do_cmd,cxx,1)
