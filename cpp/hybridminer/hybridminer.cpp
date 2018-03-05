@@ -86,6 +86,7 @@ void HybridMiner::run()
   {
     cout << "--Starting mining loop using CUDA-- \n";
 
+    m_bSolutionFound = false;
 
     //fill me in ! run  gpu solver
 
@@ -98,8 +99,14 @@ void HybridMiner::run()
 
      solution = cudaSolver.findSolution(solution);
      cout << "--GPU returned a soln ! -- \n";
-      solutionFound(solution);
+     cout << (solution);
 
+     //This sets m_solution and m_bSolutionFound
+     solutionFound(solution);
+
+
+     //this sets m_bExit true 
+     stop();
   }else{
     cout << "--Starting mining loop using CPU-- \n";
 
