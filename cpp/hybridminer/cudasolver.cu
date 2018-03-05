@@ -159,28 +159,48 @@ CUDASolver::bytes_t CUDASolver::findSolution( )
 
   //grab the last 32 items in the array !
 
+
+
   //print(repr(base64.b16encode(hashme[-32:]))[2:-1])
+
+  //[2:-1]  mean ignore the first and last char ?
+
 
   //each char[]..there are 84... is a hex number ...
 
-  char * x_solution = char[32]
+  char  x_solution[32] ;  //8 bit bytes..literally 256 bits
+/*
 
+HOW IN THE HECK DO WE FORMAT THIS  vvvvvvvvvvvvvvvv LOL  --toast
+
+*/
    cout << "\n";
-  for (int i = 52; i < 84; ++i)
+  for (int i = 0; i < 32; i++)
   {
-   //  cout << s_solution[i];
-     std::cout << std::hex << (int)s_solution[i];
+      x_solution[i] =   s_solution[i+52];
 
-     x_solution[i] = s_solution[i-52];
+            char x = x_solution[i];
+            int y = x;
+            if(y > 47 && y < 58)  //this covers 0-9
+               y = y - 48;
+            else if (y > 64 && y < 71) // this covers A-F
+               y = y - 55;
+
+  //  std::cout <<   "\n" << (  int ) x_solution[i];
+
+       std::cout << std::hex << "\n" <<    ( int ) x_solution[i] ;
+
   }
 
   cout << "\n";
 
   cout << "hexstr: \n";
 
-  cout << hexStr(x_solution,32);
+  std::string solutionString = hexStr(x_solution,32);
 
   cout << "\n";
+
+  cout << "solutionString: " << solutionString << "\n";
 
 
 
@@ -191,19 +211,16 @@ CUDASolver::bytes_t CUDASolver::findSolution( )
   cout << "holyFuk: " << holyFuk << "\n";
 
 
-
-
   CUDASolver::bytes_t byte_solution;
 
 
 
-
-  hexToBytes(holyFuk, byte_solution);
+  hexToBytes(solutionString, byte_solution);
 
   cudaEventDestroy(start);
   cudaEventDestroy(stop);
-
-  return byte_solution;
+                                          //327f0000020000000000000028ffffff8dffffff8204327f00000100000000000000275f0600
+  return byte_solution;  //should be like  0000000000b59c88b4102871832b2c2d9773188f3f9ea14b185586ba0aefdb51
 }
 
 std::string CUDASolver::hexStr( char* data, int len)
