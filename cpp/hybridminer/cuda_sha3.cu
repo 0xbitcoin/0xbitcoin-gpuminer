@@ -449,6 +449,11 @@ void gpu_init()
 
     if (cudaGetDeviceProperties(&device_prop, 0) != cudaSuccess) {
 
+      printf("\n");
+      printf("CUDA SUCCESS device prop would be: ");
+      printf("%d\n", cudaSuccess );
+
+        printf("\n");
         printf("your CUDA device prop is: ");
         printf("%d\n", cudaGetDeviceProperties(&device_prop, 0));
 
