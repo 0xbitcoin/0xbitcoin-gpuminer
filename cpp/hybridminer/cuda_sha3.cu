@@ -443,8 +443,8 @@ void gpu_init()
         printf("your CUDA device count is: ");
         printf("%d\n", device_count);
         printf("\n");
-        printf("Only want to test a ssingle GPU, exiting...\n");
-        exit(EXIT_FAILURE);
+    //    printf("Only want to test a ssingle GPU, exiting...\n");
+    //    exit(EXIT_FAILURE);
     }
 
     if (cudaGetDeviceProperties(&device_prop, 0) != cudaSuccess) {
