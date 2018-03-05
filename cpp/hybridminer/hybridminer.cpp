@@ -99,13 +99,13 @@ void HybridMiner::run()
 
      solution = cudaSolver.findSolution(solution);
      cout << "--GPU returned a soln ! -- \n";
-     cout << (solution);
+  //   cout << (solution);
 
      //This sets m_solution and m_bSolutionFound
      solutionFound(solution);
 
 
-     //this sets m_bExit true 
+     //this sets m_bExit true
      stop();
   }else{
     cout << "--Starting mining loop using CPU-- \n";

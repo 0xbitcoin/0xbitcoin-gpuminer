@@ -39,6 +39,11 @@ nvcc cuda_sha3.cu -o cuda_sha3.o
 
 
 
+## ERRORS AND HOW TO FIX
+
+1. "libcudart.so.9.1: cannot open shared object file"
+This means you have libcudart in /usr/local/cuda/lib64 and it needs to be in /usr/local/cuda/lib  so run .... sudo cp -r /usr/local/cuda/lib64 /usr/local/cuda/lib
+
 ### Update 1.5.23 - 1000X CPU Pool Mining
 
 This new build uses the C++ addon to accelerate the CPU mining one-thousand fold.  Pool mine with the command 'pool mine'.  Select a different pool with 'pool select http://...'.  Keep in mind that this update will migrate all vault data to a new and improved version so be sure to back up your private keys.  1.5.20 fixes bugs with solo mining and adds 'test mine' command.
