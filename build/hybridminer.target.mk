@@ -87,6 +87,7 @@ OBJS := \
 	$(obj).target/$(TARGET)/cpp/hybridminer/addon.o \
 	$(obj).target/$(TARGET)/cpp/hybridminer/hybridminer.o \
 	$(obj).target/$(TARGET)/cpp/hybridminer/cpusolver.o \
+	$(obj).target/$(TARGET)/cpp/hybridminer/gpusolver.o \
 	$(obj).target/$(TARGET)/cpp/hybridminer/sha3.o
 
 # Add to the list of files we specially track dependencies for.

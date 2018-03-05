@@ -48,6 +48,9 @@ private:
   std::vector<CPUSolver> m_solvers;
   std::vector<std::thread> m_threads;
 
+  GPUSolver gpuSolver;
+
+
   std::mutex m_solution_mutex;
 
   CPUSolver::bytes_t m_solution; //make one for GPU ?

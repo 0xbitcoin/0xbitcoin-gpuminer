@@ -1,8 +1,13 @@
 #include "gpusolver.h"
 
-#include "sha3.cu"
 
 #include <assert.h>
+
+
+
+//we will need this!
+//include "sha3.cu"
+
 
 
 static const char* const ascii[] = {
@@ -113,6 +118,16 @@ void GPUSolver::updateBuffer()
   m_buffer_ready = true;
 }
 
+
+
+
+
+/*
+  THSE FUNCTIONS WILL BE DONE IN .cu FILE LOOP - DEFER TO THAT
+*/
+
+
+/*
 void GPUSolver::hash(bytes_t const& solution, bytes_t& digest)
 {
   if (m_buffer_ready)
@@ -123,7 +138,7 @@ void GPUSolver::hash(bytes_t const& solution, bytes_t& digest)
   }
 
   std::copy(solution.cbegin(), solution.cend(), m_buffer.begin() + m_challenge.size() + m_address.size());
-  keccak_256(&digest[0], digest.size(), &m_buffer[0], m_buffer.size());
+//  keccak_256(&digest[0], digest.size(), &m_buffer[0], m_buffer.size());
 }
 
 bool GPUSolver::trySolution(bytes_t const& solution)
@@ -142,6 +157,7 @@ bool GPUSolver::trySolution(bytes_t const& solution)
 
   return lte(digest, m_target);
 }
+*/
 
 // static
 void GPUSolver::hexToBytes(std::string const& hex, bytes_t& bytes)

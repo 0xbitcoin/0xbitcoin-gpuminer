@@ -12,7 +12,7 @@
         "cpp/hybridminer/addon.cc",
         "cpp/hybridminer/hybridminer.cpp",
         "cpp/hybridminer/cpusolver.cpp",
-
+        "cpp/hybridminer/gpusolver.cpp",
         "cpp/hybridminer/sha3.c"
       ],
       'cflags_cc+': [ '-march=native', '-O3', '-std=c++17' ],
