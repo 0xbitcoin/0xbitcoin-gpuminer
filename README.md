@@ -8,8 +8,8 @@ Solves proof of work to mine supported ERC20 tokens.
 
 1. Uses gcc 5  and g++ 5
 2. Uses nvcc 9 (nvidia driver and build tools for cuda)
-3. A single cpp addon is used to mine with cpu and gpu, it is named cpuminer for now
-4. The function 'sethardwaretype' switches the mining loop within
+3. A single cpp addon is used to mine with cpu and gpu, it is named hybridminer  
+4. The function 'sethardwaretype' switches the mining loop within hybridminer to use a cuda approach or a cpu approach
 
 
 
@@ -17,10 +17,10 @@ Commands :
 
 - mine
 - pool mine
-- mine cuda *uses gpu*
-- pool mine cuda *uses gpu*
-- mine opencl *uses gpu*
-- pool mine opencl *uses gpu*
+- mine cuda *uses nvidia gpu* (not ready)
+- pool mine cuda *uses nvidia gpu* (not ready)
+- mine opencl *uses amd gpu*  (not ready)
+- pool mine opencl *uses amd gpu* (not ready)
 
 
 INSTRUCTIONS : FOLLOW THESE STEPS TO TEST
@@ -30,12 +30,11 @@ node index.js
 pool gpumine
 
 
-** Manually compile sha3.cu with :
+** You can manually compile sha3.cu with :
+
 nvcc cuda_sha3.cu -o cuda_sha3.o
 
-
-OR:
-*** Delete build/release/obj.target/geni/gpusolver.o  between builds
+** but should not have to
 
 
 
