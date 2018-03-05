@@ -52,8 +52,8 @@ void HybridMiner::setChallengeNumber(std::string const& challengeNumber)
 {
   if(strcmp(m_hardwareType.c_str(), "cuda") == 0)
   {
-      cout << "Setting cuda chal \n";
-  //   gpuSolver.setChallenge(challengeNumber);
+
+     gpuSolver.setChallenge(challengeNumber);
   }else{
     set(&CPUSolver::setChallenge, challengeNumber);
   }
@@ -63,8 +63,8 @@ void HybridMiner::setDifficultyTarget(std::string const& difficultyTarget)
 {
   if(strcmp(m_hardwareType.c_str(), "cuda") == 0)
   {
-      cout << "Setting cuda tar \n ";
-    // gpuSolver.setTarget(difficultyTarget);
+
+     gpuSolver.setTarget(difficultyTarget);
   }else{
     set(&CPUSolver::setTarget, difficultyTarget);
   }
@@ -74,8 +74,8 @@ void HybridMiner::setMinerAddress(std::string const& minerAddress)
 {
   if(strcmp(m_hardwareType.c_str(), "cuda") == 0)
   {
-      cout << "Setting cuda addr \n";
-  //  gpuSolver.setAddress(minerAddress);
+    
+    gpuSolver.setAddress(minerAddress);
   }else{
     set(&CPUSolver::setAddress, minerAddress);
   }

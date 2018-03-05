@@ -3,7 +3,9 @@
 
 #include <assert.h>
 
-
+#include <iostream>
+#include <string.h>
+using namespace std;
 
 //we will need this!
 //include "sha3.cu"
@@ -79,6 +81,8 @@ GPUSolver::GPUSolver() noexcept :
 
 void GPUSolver::setAddress(std::string const& addr)
 {
+    cout << "Setting cuda addr \n";
+
   assert(addr.length() == (ADDRESS_LENGTH * 2 + 2));
   hexToBytes(addr, m_address);
   updateBuffer();
@@ -86,6 +90,8 @@ void GPUSolver::setAddress(std::string const& addr)
 
 void GPUSolver::setChallenge(std::string const& chal)
 {
+    cout << "Setting cuda chal \n";
+
   assert(chal.length() == (UINT256_LENGTH * 2 + 2));
   hexToBytes(chal, m_challenge);
   updateBuffer();
@@ -93,6 +99,8 @@ void GPUSolver::setChallenge(std::string const& chal)
 
 void GPUSolver::setTarget(std::string const& target)
 {
+    cout << "Setting cuda tar \n ";
+
   assert(target.length() <= (UINT256_LENGTH * 2 + 2));
   std::string const t(static_cast<std::string::size_type>(UINT256_LENGTH * 2 + 2) - target.length(), '0');
 
