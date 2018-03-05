@@ -303,7 +303,7 @@ module.exports =  {
 
     setHardwareType(type)
     {
-      hardwareType = 'cuda';
+      hardwareType = type;
       console.log('Set hardware type: ', type)
     },
 

@@ -1,6 +1,6 @@
 {
 
-"targets": 
+"targets":
 [
   {
     "target_name": "hybridminer",
@@ -25,7 +25,7 @@
      'message': "compile cuda file on linux",
      'process_outputs_as_sources': 1,
      'action': [
-        'nvcc',
+        'nvcc', 
         '-std=c++11',
         '-Xcompiler',
         '-fpic',
@@ -46,7 +46,7 @@
     ],
 
     'library_dirs': [
-      '/usr/local/lib', 
+      '/usr/local/lib',
       '/usr/local/cuda/lib64'
     ],
 
