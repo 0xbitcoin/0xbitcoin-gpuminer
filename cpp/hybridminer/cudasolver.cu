@@ -152,7 +152,7 @@ CUDASolver::bytes_t CUDASolver::findSolution( )
   cudaEventCreate(&start);
   cudaEventCreate(&stop);
 
-  char * s_solution = find_message(s_target.c_str(), s_challenge.c_str());
+  unsigned char * s_solution = find_message(s_target.c_str(), s_challenge.c_str());
 
   cout << "CUDA found a solution :) \n ";
 
@@ -193,9 +193,11 @@ HOW IN THE HECK DO WE FORMAT THIS  vvvvvvvvvvvvvvvv LOL  --toast
   }*/
 
   //printf("ANSSWER IS : ");
-		for (int j = 52; j < 84; j++)
+	  cout << "\n";
+
+    	for (int j = 0; j < 32; j++)
 		{
-        x_solution[j-52] =   s_solution[j];
+        x_solution[j] =   s_solution[j+52];
 
 		      printf("%02x",(unsigned char) x_solution[j]);
 		}
