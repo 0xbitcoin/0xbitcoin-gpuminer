@@ -100,8 +100,13 @@ void HybridMiner::run()
      solutionBytes = cudaSolver.findSolution( );
      cout << "--GPU returned a soln ! -- \n";
 
+
+  //   print(repr(base64.b16encode(hashme[-32:]))[2:-1])
+
+
+
       std::string solutionString  = CUDASolver::bytesToString( solutionBytes );
-          cout << solutionString;
+       cout << solutionString;
 
      //This sets m_solution and m_bSolutionFound
      solutionFound(solutionBytes);

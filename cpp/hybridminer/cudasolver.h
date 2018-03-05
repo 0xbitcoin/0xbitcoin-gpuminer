@@ -35,6 +35,8 @@ public:
 
   static std::string bytesToString(bytes_t const& buffer);
 
+  static  std::string hexStr(  char* data, int len);
+
   static bool lte(bytes_t const& left, bytes_t const& right);
 
 private:

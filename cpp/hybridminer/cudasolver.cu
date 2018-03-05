@@ -3,6 +3,10 @@
 
 #include <assert.h>
 
+#include <sstream>
+#include <iomanip>
+#include <stdio.h>
+
 #include <iostream>
 #include <string.h>
 using namespace std;
@@ -152,12 +156,42 @@ CUDASolver::bytes_t CUDASolver::findSolution( )
 
   cout << "CUDA found a solution :) \n ";
 
+
+
+  //print(repr(base64.b16encode(hashme[-32:]))[2:-1])
+
+  //each char[]..there are 84... is a hex number ...
+
+/*  cout << "\n";
+  for (int i = 0; i < 84; ++i)
+  {
+   //  cout << s_solution[i];
+     std::cout << std::hex << (int)s_solution[i];
+  }*/
+
+  cout << "\n";
+
+    cout << "hexstr: \n";
+
+  cout << hexStr(s_solution,84);
+
+  cout << "\n";
+
+
+
+
   std::string holyFuk;
   holyFuk.assign(s_solution, 84);
 
   cout << "holyFuk: " << holyFuk << "\n";
 
+
+
+
   CUDASolver::bytes_t byte_solution;
+
+
+
 
   hexToBytes(holyFuk, byte_solution);
 
@@ -166,6 +200,16 @@ CUDASolver::bytes_t CUDASolver::findSolution( )
 
   return byte_solution;
 }
+
+std::string CUDASolver::hexStr( char* data, int len)
+{
+    std::stringstream ss;
+    ss << std::hex;
+    for(int i=0;i<len;++i)
+        ss << std::setw(2) << std::setfill('0') << (int)data[i];
+    return ss.str();
+}
+
 
 // static
 void CUDASolver::hexToBytes(std::string const& hex, bytes_t& bytes)
