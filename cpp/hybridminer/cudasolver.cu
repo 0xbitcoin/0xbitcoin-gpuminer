@@ -175,7 +175,7 @@ HOW IN THE HECK DO WE FORMAT THIS  vvvvvvvvvvvvvvvv LOL  --toast
 
 */
    cout << "\n";
-  for (int i = 0; i < 32; i++)
+/*  for (int i = 0; i < 32; i++)
   {
       x_solution[i] =   s_solution[i+52];
 
@@ -186,11 +186,21 @@ HOW IN THE HECK DO WE FORMAT THIS  vvvvvvvvvvvvvvvv LOL  --toast
             else if (y > 64 && y < 71) // this covers A-F
                y = y - 55;
 
-  //  std::cout <<   "\n" << (  int ) x_solution[i];
+        //  std::cout <<   "\n" << (  int ) x_solution[i];
 
        std::cout << std::hex << "\n" <<    ( int ) x_solution[i] ;
 
-  }
+  }*/
+
+  //printf("ANSSWER IS : ");
+		for (int j = 52; j < 84; j++)
+		{
+        x_solution[j-52] =   s_solution[j];
+
+		      printf("%02x",(unsigned char) x_solution[j]);
+		}
+
+
 
   cout << "\n";
 
@@ -219,8 +229,10 @@ HOW IN THE HECK DO WE FORMAT THIS  vvvvvvvvvvvvvvvv LOL  --toast
 
   cudaEventDestroy(start);
   cudaEventDestroy(stop);
-                                          //327f0000020000000000000028ffffff8dffffff8204327f00000100000000000000275f0600
-  return byte_solution;  //should be like  0000000000b59c88b4102871832b2c2d9773188f3f9ea14b185586ba0aefdb51
+
+  return byte_solution;
+  // ac7f0000208e4038ac7f0000f0eeff27ac7f00004c753035ac7f0000ffffff00
+  //should be like  B1066551E041068F09A61680E5221934FF86231A19A13A9DCE307421850AD9D5
 }
 
 std::string CUDASolver::hexStr( char* data, int len)
