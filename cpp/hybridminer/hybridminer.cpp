@@ -92,11 +92,15 @@ void HybridMiner::run()
      GPUSolver::bytes_t solution(CPUSolver::UINT256_LENGTH);
 
 
+     //move this elsewhere ??
+     gpuSolver.init();
+
+
     if (gpuSolver.findSolution(solution))
     {
       cout << "--GPU returned a soln ! -- \n";
       solutionFound(solution);
-     
+
     }
 
 

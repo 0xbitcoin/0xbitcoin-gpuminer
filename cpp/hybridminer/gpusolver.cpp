@@ -128,6 +128,16 @@ void GPUSolver::updateBuffer()
   m_buffer_ready = true;
 }
 
+
+//call the sha3.cu init func
+void GPUSolver::init()
+{
+  cout << "CUDA initializing ... \n ";
+  // gpu_init();
+
+}
+
+
 bool GPUSolver::findSolution(bytes_t const& solution)
 {
     cout << "CUDA is trying to find a solution :) \n ";
@@ -139,6 +149,11 @@ bool GPUSolver::findSolution(bytes_t const& solution)
     m_target(UINT256_LENGTH),
     */
       //run .cu functions here !!!
+
+      //find_message(    )
+
+
+      //
 
       return false;
 }

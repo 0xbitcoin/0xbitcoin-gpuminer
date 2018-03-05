@@ -25,6 +25,8 @@ public:
 
   void setTarget(std::string const& target);
 
+  void init();
+
 public:
   bool findSolution(bytes_t const& solution);
 
