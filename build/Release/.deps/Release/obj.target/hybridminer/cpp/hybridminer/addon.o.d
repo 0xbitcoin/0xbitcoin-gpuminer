@@ -28,7 +28,7 @@ Release/obj.target/hybridminer/cpp/hybridminer/addon.o: \
  ../node_modules/nan/nan_private.h \
  ../node_modules/nan/nan_typedarray_contents.h \
  ../node_modules/nan/nan_json.h ../cpp/hybridminer/hybridminer.h \
- ../cpp/hybridminer/cpusolver.h ../cpp/hybridminer/gpusolver.h
+ ../cpp/hybridminer/cpusolver.h ../cpp/hybridminer/cudasolver.h
 ../cpp/hybridminer/addon.cc:
 ../node_modules/nan/nan.h:
 /home/andy/.node-gyp/8.9.4/include/node/node_version.h:
@@ -61,4 +61,4 @@ Release/obj.target/hybridminer/cpp/hybridminer/addon.o: \
 ../node_modules/nan/nan_json.h:
 ../cpp/hybridminer/hybridminer.h:
 ../cpp/hybridminer/cpusolver.h:
-../cpp/hybridminer/gpusolver.h:
+../cpp/hybridminer/cudasolver.h:

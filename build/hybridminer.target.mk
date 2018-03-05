@@ -3,18 +3,18 @@
 TOOLSET := target
 TARGET := hybridminer
 ### Generated for rule binding_gyp_hybridminer_target_cuda_on_linux:
-$(obj).$(TOOLSET)/$(TARGET)/geni/gpusolver.o: obj := $(abs_obj)
-$(obj).$(TOOLSET)/$(TARGET)/geni/gpusolver.o: builddir := $(abs_builddir)
-$(obj).$(TOOLSET)/$(TARGET)/geni/gpusolver.o: TOOLSET := $(TOOLSET)
-$(obj).$(TOOLSET)/$(TARGET)/geni/gpusolver.o: $(srcdir)/cpp/hybridminer/gpusolver.cu $(abspath\ $<)
+$(obj).$(TOOLSET)/$(TARGET)/geni/cudasolver.o: obj := $(abs_obj)
+$(obj).$(TOOLSET)/$(TARGET)/geni/cudasolver.o: builddir := $(abs_builddir)
+$(obj).$(TOOLSET)/$(TARGET)/geni/cudasolver.o: TOOLSET := $(TOOLSET)
+$(obj).$(TOOLSET)/$(TARGET)/geni/cudasolver.o: $(srcdir)/cpp/hybridminer/cudasolver.cu $(abspath\ $<)
 	$(call do_cmd,binding_gyp_hybridminer_target_cuda_on_linux_0)
 
-all_deps += $(obj).$(TOOLSET)/$(TARGET)/geni/gpusolver.o
-cmd_binding_gyp_hybridminer_target_cuda_on_linux_0 = LD_LIBRARY_PATH=$(builddir)/lib.host:$(builddir)/lib.target:$$LD_LIBRARY_PATH; export LD_LIBRARY_PATH; cd $(srcdir)/.; mkdir -p $(obj).$(TOOLSET)/hybridminer/geni; nvcc "-std=c++11" -Xcompiler -fpic -c -o "$(obj).$(TOOLSET)/hybridminer/geni/gpusolver.o" "$(abspath $<)"
+all_deps += $(obj).$(TOOLSET)/$(TARGET)/geni/cudasolver.o
+cmd_binding_gyp_hybridminer_target_cuda_on_linux_0 = LD_LIBRARY_PATH=$(builddir)/lib.host:$(builddir)/lib.target:$$LD_LIBRARY_PATH; export LD_LIBRARY_PATH; cd $(srcdir)/.; mkdir -p $(obj).$(TOOLSET)/hybridminer/geni; nvcc "-std=c++11" -Xcompiler -fpic -c -o "$(obj).$(TOOLSET)/hybridminer/geni/cudasolver.o" "$(abspath $<)"
 quiet_cmd_binding_gyp_hybridminer_target_cuda_on_linux_0 = RULE binding_gyp_hybridminer_target_cuda_on_linux_0 $@
 
 rule_binding_gyp_hybridminer_target_cuda_on_linux_outputs := \
-	$(obj).$(TOOLSET)/$(TARGET)/geni/gpusolver.o
+	$(obj).$(TOOLSET)/$(TARGET)/geni/cudasolver.o
 
 ### Finished generating for rule: binding_gyp_hybridminer_target_cuda_on_linux
 
@@ -181,7 +181,7 @@ LIBS := \
 $(obj).target/hybridminer.node: GYP_LDFLAGS := $(LDFLAGS_$(BUILDTYPE))
 $(obj).target/hybridminer.node: LIBS := $(LIBS)
 $(obj).target/hybridminer.node: TOOLSET := $(TOOLSET)
-$(obj).target/hybridminer.node: $(OBJS) $(obj).$(TOOLSET)/$(TARGET)/geni/gpusolver.o FORCE_DO_CMD
+$(obj).target/hybridminer.node: $(OBJS) $(obj).$(TOOLSET)/$(TARGET)/geni/cudasolver.o FORCE_DO_CMD
 	$(call do_cmd,solink_module)
 
 all_deps += $(obj).target/hybridminer.node

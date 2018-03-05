@@ -10,7 +10,7 @@
 
 #include "cpusolver.h"
 
-#include "gpusolver.h"
+#include "cudasolver.h"
 
 #include <thread>
 #include <string.h>
@@ -48,7 +48,7 @@ private:
   std::vector<CPUSolver> m_solvers;
   std::vector<std::thread> m_threads;
 
-  GPUSolver gpuSolver;
+  CUDASolver cudaSolver;
 
 
   std::mutex m_solution_mutex;

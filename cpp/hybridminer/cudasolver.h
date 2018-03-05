@@ -1,5 +1,5 @@
-#ifndef _GPUSOLVER_H_
-#define _GPUSOLVER_H_
+#ifndef _CUDASOLVER_H_
+#define _CUDASOLVER_H_
 
 #include <atomic>
 #include <mutex>
@@ -7,7 +7,7 @@
 #include <vector>
 
 
-class GPUSolver
+class CUDASolver
 {
 public:
   typedef std::vector<uint8_t> bytes_t;
@@ -16,7 +16,7 @@ public:
   static const unsigned short UINT256_LENGTH = 32u;
 
 public:
-  GPUSolver() noexcept;
+  CUDASolver() noexcept;
 
 public:
   void setAddress(std::string const& addr);

@@ -1,4 +1,4 @@
-#include "gpusolver.h"
+ #include "cudasolver.h"
 
 
 #include <assert.h>
@@ -65,10 +65,10 @@ static void HexToBytes(std::string const& hex, uint8_t bytes[])
 
 
 // static
-std::atomic<uint32_t> GPUSolver::hashes(0u); // statistics only
+std::atomic<uint32_t> CUDASolver::hashes(0u); // statistics only
 
 
-GPUSolver::GPUSolver() noexcept :
+CUDASolver::CUDASolver() noexcept :
   m_address(ADDRESS_LENGTH),
   m_challenge(UINT256_LENGTH),
   m_target(UINT256_LENGTH),
@@ -79,7 +79,7 @@ GPUSolver::GPUSolver() noexcept :
   m_target_ready(false)
 { }
 
-void GPUSolver::setAddress(std::string const& addr)
+void CUDASolver::setAddress(std::string const& addr)
 {
   cout << "Setting cuda addr \n";
 
@@ -88,7 +88,7 @@ void GPUSolver::setAddress(std::string const& addr)
   updateBuffer();
 }
 
-void GPUSolver::setChallenge(std::string const& chal)
+void CUDASolver::setChallenge(std::string const& chal)
 {
   cout << "Setting cuda chal \n";
 
@@ -99,7 +99,7 @@ void GPUSolver::setChallenge(std::string const& chal)
   updateBuffer();
 }
 
-void GPUSolver::setTarget(std::string const& target)
+void CUDASolver::setTarget(std::string const& target)
 {
   cout << "Setting cuda tar " << target << "\n";
 
@@ -120,7 +120,7 @@ void GPUSolver::setTarget(std::string const& target)
 
 
 // Buffer order: 1-challenge 2-ethAddress 3-solution
-void GPUSolver::updateBuffer()
+void CUDASolver::updateBuffer()
 {
   // The idea is to have a double-buffer system in order not to try
   //  to acquire a lock on each hash() loop
@@ -134,14 +134,14 @@ void GPUSolver::updateBuffer()
 
 
 //call the sha3.cu init func
-void GPUSolver::init()
+void CUDASolver::init()
 {
   cout << "CUDA initializing ... \n ";
   gpu_init();
 }
 
 
-GPUSolver::bytes_t GPUSolver::findSolution(bytes_t const& solution)
+CUDASolver::bytes_t CUDASolver::findSolution(bytes_t const& solution)
 {
   cout << "CUDA is trying to find a solution :) \n ";
 
@@ -157,7 +157,7 @@ GPUSolver::bytes_t GPUSolver::findSolution(bytes_t const& solution)
 
   cout << "holyFuk: " << holyFuk << "\n";
 
-  GPUSolver::bytes_t byte_solution;
+  CUDASolver::bytes_t byte_solution;
 
   hexToBytes(holyFuk, byte_solution);
 
@@ -168,7 +168,7 @@ GPUSolver::bytes_t GPUSolver::findSolution(bytes_t const& solution)
 }
 
 // static
-void GPUSolver::hexToBytes(std::string const& hex, bytes_t& bytes)
+void CUDASolver::hexToBytes(std::string const& hex, bytes_t& bytes)
 {
   assert(hex.length() % 2 == 0);
   assert(bytes.size() == (hex.length() / 2 - 1));
@@ -176,7 +176,7 @@ void GPUSolver::hexToBytes(std::string const& hex, bytes_t& bytes)
 }
 
 // static
-std::string GPUSolver::bytesToString(bytes_t const& buffer)
+std::string CUDASolver::bytesToString(bytes_t const& buffer)
 {
   std::string output;
   output.reserve(buffer.size() * 2 + 1);

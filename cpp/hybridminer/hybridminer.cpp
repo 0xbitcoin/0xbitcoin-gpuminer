@@ -50,7 +50,7 @@ void HybridMiner::setChallengeNumber(std::string const& challengeNumber)
 {
   if(strcmp(m_hardwareType.c_str(), "cuda") == 0)
   {
-     gpuSolver.setChallenge(challengeNumber);
+     cudaSolver.setChallenge(challengeNumber);
   }else{
     set(&CPUSolver::setChallenge, challengeNumber);
   }
@@ -60,7 +60,7 @@ void HybridMiner::setDifficultyTarget(std::string const& difficultyTarget)
 {
   if(strcmp(m_hardwareType.c_str(), "cuda") == 0)
   {
-     gpuSolver.setTarget(difficultyTarget);
+     cudaSolver.setTarget(difficultyTarget);
   }else{
     set(&CPUSolver::setTarget, difficultyTarget);
   }
@@ -70,7 +70,7 @@ void HybridMiner::setMinerAddress(std::string const& minerAddress)
 {
   if(strcmp(m_hardwareType.c_str(), "cuda") == 0)
   {
-    gpuSolver.setAddress(minerAddress);
+    cudaSolver.setAddress(minerAddress);
   }else{
     set(&CPUSolver::setAddress, minerAddress);
   }
@@ -89,16 +89,16 @@ void HybridMiner::run()
 
     //fill me in ! run  gpu solver
 
-     GPUSolver::bytes_t solution(CPUSolver::UINT256_LENGTH);
+     CUDASolver::bytes_t solution(CUDASolver::UINT256_LENGTH);
 
 
      //this is core dumping - maybe when you dont have a GPU?
-     gpuSolver.init();
+     cudaSolver.init();
 
 
-  //  solution = gpuSolver.findSolution(solution);
-  //  cout << "--GPU returned a soln ! -- \n";
-  //  solutionFound(solution);
+     solution = cudaSolver.findSolution(solution);
+     cout << "--GPU returned a soln ! -- \n";
+      solutionFound(solution);
 
   }else{
     cout << "--Starting mining loop using CPU-- \n";

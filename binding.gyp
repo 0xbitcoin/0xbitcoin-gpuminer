@@ -9,10 +9,10 @@
  {
       "target_name": "hybridminer",
       "sources": [
-        "cpp/hybridminer/addon.cc", 
+        "cpp/hybridminer/addon.cc",
         "cpp/hybridminer/hybridminer.cpp",
         "cpp/hybridminer/cpusolver.cpp",
-        "cpp/hybridminer/gpusolver.cu",
+        "cpp/hybridminer/cudasolver.cu",
         "cpp/hybridminer/sha3.c"
 
       ],
