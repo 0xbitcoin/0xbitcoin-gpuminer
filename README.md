@@ -33,16 +33,8 @@ pool gpumine
 nvcc cuda_sha3.cu -o cuda_sha3.o
 
 
-
-
-ISSUE:
-
-nvcc sha3.cu -o sha3   works
-but cannot compile sha3.cu using node-gyp...
-
-        Error: libcudart.so.9.1: cannot open shared object file: No such file or directory
-            at Object.Module._extensions..node (module.js:664:18)
-
+OR:
+*** Delete build/release/obj.target/geni/gpusolver.o  between builds 
 
 
 

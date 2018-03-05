@@ -448,6 +448,10 @@ void gpu_init()
     }
 
     if (cudaGetDeviceProperties(&device_prop, 0) != cudaSuccess) {
+
+        printf("your CUDA device prop is: ");
+        printf("%d\n", cudaGetDeviceProperties(&device_prop, 0));
+
         printf("Problem getting properties for device, exiting...\n");
         exit(EXIT_FAILURE);
     }
