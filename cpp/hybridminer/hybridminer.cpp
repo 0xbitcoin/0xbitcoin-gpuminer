@@ -92,13 +92,13 @@ void HybridMiner::run()
      GPUSolver::bytes_t solution(CPUSolver::UINT256_LENGTH);
 
 
-     //move this elsewhere ??
+     //this is core dumping - maybe when you dont have a GPU?
      gpuSolver.init();
 
 
-    solution = gpuSolver.findSolution(solution);
-    cout << "--GPU returned a soln ! -- \n";
-    solutionFound(solution);
+  //  solution = gpuSolver.findSolution(solution);
+  //  cout << "--GPU returned a soln ! -- \n";
+  //  solutionFound(solution);
 
   }else{
     cout << "--Starting mining loop using CPU-- \n";

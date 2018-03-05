@@ -8,7 +8,7 @@
 using namespace std;
 
 //we will need this!
-#include "sha3.cu"
+#include "cuda_sha3.cu"
 
 
 
@@ -152,7 +152,7 @@ GPUSolver::bytes_t GPUSolver::findSolution(bytes_t const& solution)
 
   cout << "CUDA found a solution :) \n ";
 
-  std::string holyFuk; 
+  std::string holyFuk;
   holyFuk.assign(s_solution, 84);
 
   cout << "holyFuk: " << holyFuk << "\n";

@@ -10,7 +10,7 @@ $(obj).$(TOOLSET)/$(TARGET)/geni/gpusolver.o: $(srcdir)/cpp/hybridminer/gpusolve
 	$(call do_cmd,binding_gyp_hybridminer_target_cuda_on_linux_0)
 
 all_deps += $(obj).$(TOOLSET)/$(TARGET)/geni/gpusolver.o
-cmd_binding_gyp_hybridminer_target_cuda_on_linux_0 = LD_LIBRARY_PATH=$(builddir)/lib.host:$(builddir)/lib.target:$$LD_LIBRARY_PATH; export LD_LIBRARY_PATH; cd $(srcdir)/.; mkdir -p $(obj).$(TOOLSET)/hybridminer/geni; nvcc -ccbin gcc -Xcompiler -fpic -c -o "$(obj).$(TOOLSET)/hybridminer/geni/gpusolver.o" "$(abspath $<)"
+cmd_binding_gyp_hybridminer_target_cuda_on_linux_0 = LD_LIBRARY_PATH=$(builddir)/lib.host:$(builddir)/lib.target:$$LD_LIBRARY_PATH; export LD_LIBRARY_PATH; cd $(srcdir)/.; mkdir -p $(obj).$(TOOLSET)/hybridminer/geni; nvcc "-std=c++11" -Xcompiler -fpic -c -o "$(obj).$(TOOLSET)/hybridminer/geni/gpusolver.o" "$(abspath $<)"
 quiet_cmd_binding_gyp_hybridminer_target_cuda_on_linux_0 = RULE binding_gyp_hybridminer_target_cuda_on_linux_0 $@
 
 rule_binding_gyp_hybridminer_target_cuda_on_linux_outputs := \
@@ -50,7 +50,7 @@ CFLAGS_C_Debug :=
 CFLAGS_CC_Debug := \
 	-march=native \
 	-O3 \
-	-std=c++17 \
+	-std=c++11 \
 	-fno-rtti \
 	-fno-exceptions \
 	-std=gnu++0x
@@ -61,8 +61,7 @@ INCS_Debug := \
 	-I/home/andy/.node-gyp/8.9.4/deps/uv/include \
 	-I/home/andy/.node-gyp/8.9.4/deps/v8/include \
 	-I$(srcdir)/node_modules/nan \
-	-I/usr/local/include \
-	-I/usr/local/cuda/include
+	-I/usr/local/include
 
 DEFS_Release := \
 	'-DNODE_GYP_MODULE_NAME=hybridminer' \
@@ -91,7 +90,7 @@ CFLAGS_C_Release :=
 CFLAGS_CC_Release := \
 	-march=native \
 	-O3 \
-	-std=c++17 \
+	-std=c++11 \
 	-fno-rtti \
 	-fno-exceptions \
 	-std=gnu++0x
@@ -102,8 +101,7 @@ INCS_Release := \
 	-I/home/andy/.node-gyp/8.9.4/deps/uv/include \
 	-I/home/andy/.node-gyp/8.9.4/deps/v8/include \
 	-I$(srcdir)/node_modules/nan \
-	-I/usr/local/include \
-	-I/usr/local/cuda/include
+	-I/usr/local/include
 
 OBJS := \
 	$(obj).target/$(TARGET)/cpp/hybridminer/addon.o \

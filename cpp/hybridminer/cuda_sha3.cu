@@ -440,7 +440,10 @@ void gpu_init()
 
     cudaGetDeviceCount(&device_count);
     if (device_count != 1) {
-        printf("Only want to test a single GPU, exiting...\n");
+        printf("your CUDA device count is: ");
+        printf("%d\n", device_count);
+        printf("\n");
+        printf("Only want to test a ssingle GPU, exiting...\n");
         exit(EXIT_FAILURE);
     }
 

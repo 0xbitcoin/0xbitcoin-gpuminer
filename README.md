@@ -29,6 +29,10 @@ node index.js
 pool gpumine
 
 
+** Manually compile sha3.cu with :
+nvcc cuda_sha3.cu -o cuda_sha3.o
+
+
 
 
 ISSUE:
