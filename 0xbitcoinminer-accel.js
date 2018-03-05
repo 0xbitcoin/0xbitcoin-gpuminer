@@ -19,7 +19,7 @@ var tokenContract;
 const PRINT_STATS_TIMEOUT = 5000;
 const COLLECT_MINING_PARAMS_TIMEOUT = 4000;
 
-var hardwareType = 'cpu'; //default
+var hardwareType = 'cuda'; //default
 
 
 
@@ -303,7 +303,7 @@ module.exports =  {
 
     setHardwareType(type)
     {
-      hardwareType = type;
+      hardwareType = 'cuda';
       console.log('Set hardware type: ', type)
     },
 

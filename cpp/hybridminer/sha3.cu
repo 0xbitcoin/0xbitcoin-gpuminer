@@ -496,7 +496,7 @@ char *read_in_messages(char *file_name)
 }
 
 
-void find_message(const char * challenge_target, const char * hash_prefix) // can accept challenge
+char* find_message(const char * challenge_target, const char * hash_prefix) // can accept challenge
 {
 
 		int h_done[1] = {0};
@@ -523,12 +523,11 @@ void find_message(const char * challenge_target, const char * hash_prefix) // ca
 		int now = (int)time(0);
 		int cnt = 0;
 
-
-
 		while (!h_done[0]) {
 			brute_force_single<<<number_blocks, number_threads>>>(d_challenge_hash, device_solution, d_done, d_hash_prefix, now);
-cnt+=number_threads*number_blocks*10;
-//printf("%u\n", cnt);
+			cnt+=number_threads*number_blocks*10;
+			//printf("%u\n", cnt);
+
 			cudaMemcpy(h_done, d_done, sizeof(int), cudaMemcpyDeviceToHost);
 
 			cudaError_t cudaerr = cudaDeviceSynchronize();
@@ -540,17 +539,14 @@ cnt+=number_threads*number_blocks*10;
 
 		char * h_message = (char*)malloc(84);
 		cudaMemcpy(h_message, device_solution, 84, cudaMemcpyDeviceToHost);
-    FILE * fp;
-    fp = fopen ("out.binary", "wb") ;
-    fwrite(h_message , 84, 1 , fp );
-		fclose(fp);
 
-		//printf("ANSSWER IS : ");
-		//for (int j = 52; j < 84; j++)
-		//{
-		      //printf("%02x",0xFF &  h_message[j]);
-		//}
-		//printf("\n");
+		printf("SOLUTION IS : ");
+		for (int j = 0; j < 84; j++)
+		{
+			printf("%c", h_message[j]);
+		}
+		printf("\n");
+		return h_message;
 }
 
 /**
@@ -565,7 +561,7 @@ int main(int argc, char **argv)
 	char  hash_prefix[53];
 
 
-        FILE *f = fopen(hash_prefix_filename, "r");
+    FILE *f = fopen(hash_prefix_filename, "r");
 	fread(&hash_prefix, 52, 1, f);
 
 	hash_prefix[52]='\0';
@@ -573,7 +569,7 @@ int main(int argc, char **argv)
 
 	char  challenge_target[32];
 
-        FILE *fc = fopen(challenge, "r");
+    FILE *fc = fopen(challenge, "r");
 	fread(&challenge_target, 32, 1, fc);
 
 	gpu_init();

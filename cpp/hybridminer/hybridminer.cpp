@@ -23,7 +23,6 @@ HybridMiner::HybridMiner() noexcept :
 }
 
 
-
 HybridMiner::~HybridMiner()
 {
   stop();
@@ -44,7 +43,6 @@ void HybridMiner::setHardwareType(std::string const& hardwareType)
 {
   cout << "Setting hardware type: ";
   cout << (m_hardwareType = hardwareType);
-
 }
 
 
@@ -82,6 +80,8 @@ void HybridMiner::setMinerAddress(std::string const& minerAddress)
 void HybridMiner::run()
 {
 
+  cout << "--Starting mining loop hardware type is: " << m_hardwareType.c_str();
+
   if(  strcmp(m_hardwareType.c_str(), "cuda") == 0   )
   {
     cout << "--Starting mining loop using CUDA-- \n";
@@ -96,15 +96,9 @@ void HybridMiner::run()
      gpuSolver.init();
 
 
-    if (gpuSolver.findSolution(solution))
-    {
-      cout << "--GPU returned a soln ! -- \n";
-      solutionFound(solution);
-
-    }
-
-
-    // solutionFound(solution);
+    solution = gpuSolver.findSolution(solution);
+    cout << "--GPU returned a soln ! -- \n";
+    solutionFound(solution);
 
   }else{
     cout << "--Starting mining loop using CPU-- \n";

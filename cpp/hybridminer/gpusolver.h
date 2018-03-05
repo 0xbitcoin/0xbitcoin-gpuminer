@@ -28,7 +28,7 @@ public:
   void init();
 
 public:
-  bool findSolution(bytes_t const& solution);
+  bytes_t findSolution(bytes_t const& solution);
 
 public:
   static void hexToBytes(std::string const& hex, bytes_t& bytes);
@@ -43,6 +43,8 @@ private:
   void hash(bytes_t const& solution, bytes_t& digest);
 
 private:
+  std::string s_challenge;
+  std::string s_target;
   bytes_t m_address;
   bytes_t m_challenge;
   bytes_t m_target, m_target_tmp;
