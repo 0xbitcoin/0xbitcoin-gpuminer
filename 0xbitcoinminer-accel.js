@@ -28,7 +28,7 @@ module.exports =  {
     async init(web3,  vault, miningLogger)
   //  async init(web3, subsystem_command, vault, networkInterface, miningLogger)
     {
-        CPPMiner.setHardwareType(hardwareType);
+
 
         process.on('exit', () => {
             console.log("Process exiting... stopping miner");
@@ -47,6 +47,17 @@ module.exports =  {
 
     async mine(subsystem_command,subsystem_option)
     {
+
+      if(subsystem_option == 'cuda')
+      {
+        CPPMiner.setHardwareType('cuda') ;
+      }else if(subsystem_option == 'opencl'){
+        CPPMiner.setHardwareType('opencl');
+      }else{
+        CPPMiner.setHardwareType('cpu');
+      }
+
+
 
       console.log('\n')
 

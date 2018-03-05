@@ -120,7 +120,7 @@ async function handleCommand(result)
     await Vault.handleConfigCommand(subsystem_command,subsystem_option)
   }
 
-  if(subsystem_name == 'mine' || subsystem_name == 'gpumine')
+  if(subsystem_name == 'mine' )
   {
     Vault.requirePassword(true) //for encryption of private key !
 
@@ -130,13 +130,7 @@ async function handleCommand(result)
 
     NetworkInterface.init(web3, Vault, miningLogger);
 
-    if(subsystem_name == 'gpumine')
-    {
-      Miner.setHardwareType('cuda');
-    }else{
-      Miner.setHardwareType('cpu');
-    }
-
+     
     Miner.init( web3, Vault, miningLogger );
     Miner.setNetworkInterface( NetworkInterface );
 
@@ -147,7 +141,7 @@ async function handleCommand(result)
 
 
   //mining test
-  if(subsystem_name == 'test' && (subsystem_command == 'mine' || subsystem_command == 'gpumine') )
+  if(subsystem_name == 'test' &&  subsystem_command == 'mine'  )
   {
     Vault.requirePassword(true) //for encryption of private key !
 
@@ -168,12 +162,8 @@ async function handleCommand(result)
 
     NetworkInterface.init(web3, Vault, miningLogger);
 
-    if(subsystem_command == 'gpumine')
-    {
-      Miner.setHardwareType('cuda') ;
-    }else{
-      Miner.setHardwareType('cpu');
-    }
+
+
 
 
     Miner.init( web3, Vault, miningLogger );
@@ -194,14 +184,9 @@ async function handleCommand(result)
 
 
 
-      if( subsystem_command == "mine" || subsystem_command == "gpumine" ){
+      if( subsystem_command == "mine"   ){
 
-        if(subsystem_command == 'gpumine')
-        {
-           Miner.setHardwareType('cuda') ;
-        }else{
-          Miner.setHardwareType('cpu');
-        }
+
 
         Miner.init( web3 , Vault,  miningLogger );
         Miner.setNetworkInterface( PoolInterface );

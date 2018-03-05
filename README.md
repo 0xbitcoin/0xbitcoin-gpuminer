@@ -17,9 +17,10 @@ Commands :
 
 - mine
 - pool mine
-- gpumine  *uses gpu*
-- pool gpumine *uses gpu*
-
+- mine cuda *uses gpu*
+- pool mine cuda *uses gpu*
+- mine opencl *uses gpu*
+- pool mine opencl *uses gpu*
 
 
 INSTRUCTIONS : FOLLOW THESE STEPS TO TEST
@@ -34,7 +35,7 @@ nvcc cuda_sha3.cu -o cuda_sha3.o
 
 
 OR:
-*** Delete build/release/obj.target/geni/gpusolver.o  between builds 
+*** Delete build/release/obj.target/geni/gpusolver.o  between builds
 
 
 
