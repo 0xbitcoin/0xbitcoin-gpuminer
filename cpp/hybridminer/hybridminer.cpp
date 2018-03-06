@@ -132,6 +132,11 @@ void HybridMiner::run()
 
 void HybridMiner::stop()
 {
+  if(  strcmp(m_hardwareType.c_str(), "cuda") == 0   )
+  {
+    cudaSolver.stopFinding();
+  }
+
   m_bExit = true;
 }
 

@@ -37,6 +37,7 @@ int number_multi_processors;
 int number_blocks;
 int number_threads;
 int max_threads_per_mp;
+int h_done[1] = {0};
 
 int num_messages;
 const int digest_size = 256;
@@ -411,6 +412,14 @@ for(int i =0; i<LOOP_IN_GPU_OPTIMIZATION;i++){
 	free(hash);
 }
 
+
+
+void stop_solving()
+{
+  h_done[0] = 1 ;
+}
+
+
 /**
  * Initializes the global variables by calling the cudaGetDeviceProperties().
  */
@@ -447,7 +456,10 @@ int gcd(int a, int b) {
 unsigned char * find_message(const char * challenge_target, const char * hash_prefix) // can accept challenge
 {
 
-		int h_done[1] = {0};
+
+    h_done[0] = 0;
+
+
 
 		int *d_done;
 		unsigned char *d_hash;
@@ -485,7 +497,7 @@ fprintf(stderr,"%u\n", cnt);
 
         cout << cudaerr;
 				printf("kernel launch failed with error \"%s\".\n", cudaGetErrorString(cudaerr));
-        exit(EXIT_FAILURE);
+    //    exit(EXIT_FAILURE);
 			}
 		}
 

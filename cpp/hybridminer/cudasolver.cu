@@ -148,15 +148,24 @@ void CUDASolver::init()
 }
 
 
+
+
+void CUDASolver::stopFinding( )
+{
+  cout << "CUDA has stopped hashing for now. \n ";
+
+   //set h_done[0] = 1
+   stop_solving();
+}
+
+
+
 CUDASolver::bytes_t CUDASolver::findSolution( )
 {
   cout << "CUDA is trying to find a solution :) \n ";
 
   cudaEventCreate(&start);
   cudaEventCreate(&stop);
-
-
-
 
 
 

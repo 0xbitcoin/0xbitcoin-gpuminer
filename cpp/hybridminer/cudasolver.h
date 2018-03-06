@@ -29,6 +29,7 @@ public:
 
 public:
   bytes_t findSolution( );
+  void stopFinding( );
 
 public:
   static void hexToBytes(std::string const& hex, bytes_t& bytes);
