@@ -84,7 +84,7 @@ void HybridMiner::run()
 
   if(  strcmp(m_hardwareType.c_str(), "cuda") == 0   )
   {
-    cout << "--Starting mining loop using CUDA-- \n";
+    cout << "--StafindSolutionrting mining loop using CUDA-- \n";
 
     m_bSolutionFound = false;
 
@@ -101,12 +101,11 @@ void HybridMiner::run()
      cout << "--GPU returned a soln ! -- \n";
 
 
-  //   print(repr(base64.b16encode(hashme[-32:]))[2:-1])
 
 
 
-      std::string solutionString  = CUDASolver::bytesToString( solutionBytes );
-       cout << solutionString;
+    //  std::string solutionString  = CUDASolver::bytesToString( solutionBytes );
+    //   cout << solutionString;
 
      //This sets m_solution and m_bSolutionFound
      solutionFound(solutionBytes);
@@ -154,6 +153,8 @@ void HybridMiner::thr_func(CPUSolver& solver)
       solution[i + 2] = static_cast<uint8_t>((tmp & 0x00ff0000) >> 16);
       solution[i + 3] = static_cast<uint8_t>((tmp & 0xff000000) >> 24);
     }
+
+   
 
     if (solver.trySolution(solution))
     {

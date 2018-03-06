@@ -148,7 +148,7 @@ void CUDASolver::init()
 }
 
 
-CUDASolver::bytes_t CUDASolver::findSolution( )
+ CUDASolver::bytes_t CUDASolver::findSolution( )
 {
   cout << "CUDA is trying to find a solution :) \n ";
 
@@ -157,93 +157,18 @@ CUDASolver::bytes_t CUDASolver::findSolution( )
 
   unsigned char * s_solution = find_message(s_target.c_str(), s_challenge.c_str());
 
-  cout << "CUDA found a solution :) \n ";
+  CUDASolver::bytes_t byte_solution(32);
+  for(int i = 52; i < 84; i++){
+    cout << (uint8_t)s_solution[i] << "\n";
+    byte_solution[i-52] = (uint8_t)s_solution[i];
 
-
-  //grab the last 32 items in the array !
-
-
-
-  //print(repr(base64.b16encode(hashme[-32:]))[2:-1])
-
-  //[2:-1]  mean ignore the first and last char ?
-
-
-  //each char[]..there are 84... is a hex number ...
-
-  char  x_solution[32] ;  //8 bit bytes..literally 256 bits
-/*
-
-HOW IN THE HECK DO WE FORMAT THIS  vvvvvvvvvvvvvvvv LOL  --toast
-
-*/
-   cout << "\n";
-/*  for (int i = 0; i < 32; i++)
-  {
-      x_solution[i] =   s_solution[i+52];
-
-            char x = x_solution[i];
-            int y = x;
-            if(y > 47 && y < 58)  //this covers 0-9
-               y = y - 48;
-            else if (y > 64 && y < 71) // this covers A-F
-               y = y - 55;
-
-        //  std::cout <<   "\n" << (  int ) x_solution[i];
-
-       std::cout << std::hex << "\n" <<    ( int ) x_solution[i] ;
-
-  }*/
-
-  //printf("ANSSWER IS : ");
-	  cout << "\n";
-
-    	for (int j = 0; j < 32; j++)
-		{
-        x_solution[j] =   s_solution[j+52];
-
-		      printf("%02x",(unsigned char) x_solution[j]);
-		}
-
-
-
-  cout << "\n";
-
-  cout << "hexstr: \n";
-
-  std::string solutionString = hexStr(x_solution,32);
-
-  cout << "\n";
-
-  cout << "solutionString: " << solutionString << "\n";
-
-
-
-
-  std::string holyFuk;
-  holyFuk.assign(x_solution, 32);
-
-  cout << "holyFuk: " << holyFuk << "\n";
-
-
-
-
-  //make sure output goes to NODEJS
-  CUDASolver::bytes_t byte_solution = CUDASolver::bytes_t(31u);
-
-
-
-  std::string fakeSolutionString("B1066551E041068F09A61680E5221934FF86231A19A13A9DCE307421850AD9D5");
-
-  hexToBytes(fakeSolutionString, byte_solution);
-
+  }
   cudaEventDestroy(start);
   cudaEventDestroy(stop);
 
   return byte_solution;
-  // ac7f0000208e4038ac7f0000f0eeff27ac7f00004c753035ac7f0000ffffff00
-  //should be like
 }
+
 
 std::string CUDASolver::hexStr( char* data, int len)
 {
