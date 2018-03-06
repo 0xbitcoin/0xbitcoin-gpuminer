@@ -155,7 +155,22 @@ void CUDASolver::init()
   cudaEventCreate(&start);
   cudaEventCreate(&stop);
 
-  unsigned char * s_solution = find_message(s_target.c_str(), s_challenge.c_str());
+    char * hash_prefix[50];
+   char *s_challenge_chars = s_challenge.c_str();
+   char *m_address_chars = m_address.c_str();
+
+
+  for(int i = 0; i < 32; i++){
+       cout <<  s_challenge_chars[i] << "\n";
+       hash_prefix[i] = s_challenge_chars[i];
+  }
+
+  for(int i = 32; i < 50; i++){
+       cout <<  m_address_chars[i-32] << "\n";
+       hash_prefix[i] = m_address_chars[i-32];
+  }
+
+  unsigned char * s_solution = find_message(s_target.c_str(), hash_prefix );
 
   CUDASolver::bytes_t byte_solution(32);
   for(int i = 52; i < 84; i++){

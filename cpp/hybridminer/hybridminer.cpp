@@ -154,12 +154,10 @@ void HybridMiner::thr_func(CPUSolver& solver)
       solution[i + 3] = static_cast<uint8_t>((tmp & 0xff000000) >> 24);
     }
 
-   
+
 
     if (solver.trySolution(solution))
     {
-
-
       solutionFound(solution);
       break;
     }
