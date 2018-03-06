@@ -481,6 +481,8 @@ unsigned char * find_message(const char * challenge_target, const char * hash_pr
 			cudaError_t cudaerr = cudaDeviceSynchronize();
 			if (cudaerr != cudaSuccess) {
 				h_done[0] = 1;
+
+        cout << cudaerr;
 				printf("kernel launch failed with error \"%s\".\n", cudaGetErrorString(cudaerr));
         exit(EXIT_FAILURE);
 			}
