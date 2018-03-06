@@ -18,6 +18,9 @@ based off of https://github.com/Dunhili/SHA3-gpu-brute-force-cracker/blob/master
  * This is the parallel version of SHA-3.
  */
 
+
+ #include "cudasolver.h"
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <stdint.h>
@@ -471,7 +474,7 @@ unsigned char * find_message(const char * challenge_target, const char * hash_pr
 
 		while (!h_done[0]) {
 			gpu_mine<<<number_blocks, number_threads>>>(d_challenge_hash, device_solution, d_done, d_hash_prefix, now,cnt);
-cnt+=number_threads*number_blocks*20;
+        cnt+=number_threads*number_blocks*20;
 //fprintf(stderr,"%u\n", cnt);
 			cudaMemcpy(h_done, d_done, sizeof(int), cudaMemcpyDeviceToHost);
 
@@ -479,6 +482,7 @@ cnt+=number_threads*number_blocks*20;
 			if (cudaerr != cudaSuccess) {
 				h_done[0] = 1;
 				printf("kernel launch failed with error \"%s\".\n", cudaGetErrorString(cudaerr));
+        exit(EXIT_FAILURE);
 			}
 		}
 
@@ -488,7 +492,7 @@ cnt+=number_threads*number_blocks*20;
     fp = fopen ("out.binary", "wb") ;
     fwrite(h_message , 84, 1 , fp );
 		fclose(fp);
-fprintf(stderr,"Total hashes: %u\n", cnt);
+    fprintf(stderr,"Total hashes: %u\n", cnt);
 
 		 printf("MIKERS ANSWER IS : ");
 		for (int j = 52; j < 84; j++)
@@ -504,7 +508,7 @@ fprintf(stderr,"Total hashes: %u\n", cnt);
 /**
  * Main method, initializes the global variables, calls the kernels, and prints the results.
  */
-int main(int argc, char **argv)
+int init(int argc, char **argv)
 {
 
 

@@ -1,5 +1,5 @@
- #include "cudasolver.h"
 
+ #include "cudasolver.h"
 
 #include <assert.h>
 
@@ -12,7 +12,10 @@
 using namespace std;
 
 //we will need this!
-#include "cuda_sha3.cu"
+
+
+
+ #include "cuda_sha3.cu"
 
 
 
