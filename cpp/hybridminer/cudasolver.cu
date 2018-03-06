@@ -196,8 +196,7 @@ for(int i = 2; i < target_length; i++){
 unsigned   char  hash_prefix[52];
 std::string clean_challenge = s_challenge;
 bytes_t challenge_bytes(32);
-cout << "S CHALLENGE\t"<<  s_challenge << "\n";
-cout << "CLEAN CHALLENGE\t"<<  clean_challenge << "\n";
+
 
 hexToBytes(clean_challenge, challenge_bytes);
 for(int i = 0; i < 32; i++){
@@ -207,13 +206,13 @@ for(int i = 0; i < 20; i++){
 hash_prefix[i+32] = (unsigned char)m_address[i];
 }
 
-//m_address // 20 bytes right format
+ /*
 	printf("Looking at prefix:\n");
 for(int i = 0; i < 52; i++){
 	printf("%02x",(unsigned char) hash_prefix[i]);
 }
 	printf("\n/prefix\n");
-
+*/
 
 
 
@@ -249,10 +248,11 @@ std::string CUDASolver::hexStr( char* data, int len)
 void CUDASolver::hexToBytes(std::string const& hex, bytes_t& bytes)
 {
 
+/*
     cout << "hex to bytes: " << hex << "\n";
     cout << bytes.size()  << "\n";
     cout << hex.length()  << "\n";
-
+*/
   assert(hex.length() % 2 == 0);
   assert(bytes.size() == (hex.length() / 2 - 1));
   HexToBytes(hex.substr(2), &bytes[0]);

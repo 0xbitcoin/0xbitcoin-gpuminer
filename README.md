@@ -17,8 +17,8 @@ Commands :
 
 - mine
 - pool mine
-- mine cuda *uses nvidia gpu* (not ready)
-- pool mine cuda *uses nvidia gpu* (not ready)
+- mine cuda *uses nvidia gpu*  
+- pool mine cuda *uses nvidia gpu*  
 - mine opencl *uses amd gpu*  (not ready)
 - pool mine opencl *uses amd gpu* (not ready)
 

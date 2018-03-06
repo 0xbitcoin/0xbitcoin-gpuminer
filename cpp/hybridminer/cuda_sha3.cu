@@ -484,7 +484,7 @@ unsigned char * find_message(const char * challenge_target, const char * hash_pr
 
         cout << cudaerr;
 				printf("kernel launch failed with error \"%s\".\n", cudaGetErrorString(cudaerr));
-    //    exit(EXIT_FAILURE);
+        exit(EXIT_FAILURE);
 			}
 		}
 
@@ -496,13 +496,14 @@ unsigned char * find_message(const char * challenge_target, const char * hash_pr
 		fclose(fp);
     fprintf(stderr,"Total hashes: %u\n", cnt);
 
-		 printf("MIKERS ANSWER IS : ");
+	/*
+   printf("MIKERS ANSWER IS : ");
 		for (int j = 52; j < 84; j++)
 		{
 		      printf("%02x",(unsigned char) h_message[j]);
 		}
 		printf("\n");
-
+*/
 
     return h_message;
 }
