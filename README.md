@@ -4,12 +4,15 @@
 Solves proof of work to mine supported ERC20 tokens.  
 
 
-## 2.0.0 Development Notes  - Adds GPU mining
 
-1. Uses gcc 5  and g++ 5
-2. Uses nvcc 9 (nvidia driver and build tools for cuda)
-3. A single cpp addon is used to mine with cpu and gpu, it is named hybridminer  
-4. The function 'sethardwaretype' switches the mining loop within hybridminer to use a cuda approach or a cpu approach
+### Update 2.0.11 -GPU & CPU & Pool Mining
+
+This new build adds CUDA GPU Mining capability credits to Mikers! This will mine to a pool or solo and will mine using a CPU or a CUDA GPU.  
+
+
+IMPORTANT NOTE:  HASHRATE MAY NOT DISPLAY - BUT IT IS WORKING
+If unsure, be sure to test functionality with:
+'test mine cuda'
 
 
 
@@ -21,6 +24,19 @@ Commands :
 - pool mine cuda *uses nvidia gpu*  
 - mine opencl *uses amd gpu*  (not ready)
 - pool mine opencl *uses amd gpu* (not ready)
+- test mine
+- test mine cuda *uses nvidia gpu*  
+
+
+
+
+## 2.0.0 Development Notes  - Adds GPU mining
+
+1. Uses gcc 5  and g++ 5
+2. Uses nvcc 9 (nvidia driver and build tools for cuda)
+3. A single cpp addon is used to mine with cpu and gpu, it is named hybridminer  
+4. The function 'sethardwaretype' switches the mining loop within hybridminer to use a cuda approach or a cpu approach
+
 
 
 INSTRUCTIONS : FOLLOW THESE STEPS TO TEST
@@ -30,27 +46,10 @@ node index.js
 pool mine cuda
 
 
-** You can manually compile sha3.cu with :
-
-nvcc cuda_sha3.cu -o cuda_sha3.o
-
-** but should not have to
-
-
-
-
-## ERRORS AND HOW TO FIX
-
-1. "libcudart.so.9.1: cannot open shared object file"
-This means you have libcudart in /usr/local/cuda/lib64 and it needs to be in /usr/local/cuda/lib  so run .... sudo cp -r /usr/local/cuda/lib64 /usr/local/cuda/lib
-
-### Update 1.5.23 - 1000X CPU Pool Mining
-
-This new build uses the C++ addon to accelerate the CPU mining one-thousand fold.  Pool mine with the command 'pool mine'.  Select a different pool with 'pool select http://...'.  Keep in mind that this update will migrate all vault data to a new and improved version so be sure to back up your private keys.  1.5.20 fixes bugs with solo mining and adds 'test mine' command.
 
 ### Official Releases Downloads
 
-[Download Packaged Releases](https://github.com/0xbitcoin/0xbitcoin-miner/blob/master/RELEASES.md)
+[Download Packaged Releases](https://github.com/0xbitcoin/0xbitcoin-gpuminer/blob/master/RELEASES.md)
 
 
 
