@@ -164,7 +164,7 @@ CUDASolver::bytes_t CUDASolver::findSolution( )
 
 
      //padded with the 0x = 64+2
-unsigned  char  target_input[66];
+unsigned  char  target_input[64];
 
 int target_length = s_target.size();
 
