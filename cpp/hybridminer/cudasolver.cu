@@ -224,7 +224,7 @@ unsigned char * s_solution = find_message((const char *)target_input , (const ch
   for(int i = 52; i < 84; i++){
        byte_solution[i-52] = (uint8_t)s_solution[i];
 
-	cout << (uint8_t)s_solution[i] << "\n";
+	//cout << (uint8_t)s_solution[i] << "\n";
 
   }
   cudaEventDestroy(start);

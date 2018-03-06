@@ -484,7 +484,7 @@ unsigned char * find_message(const char * challenge_target, const char * hash_pr
 
         cout << cudaerr;
 				printf("kernel launch failed with error \"%s\".\n", cudaGetErrorString(cudaerr));
-        exit(EXIT_FAILURE);
+    //    exit(EXIT_FAILURE);
 			}
 		}
 
