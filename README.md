@@ -40,9 +40,13 @@ Commands :
 
 
 INSTRUCTIONS : FOLLOW THESE STEPS TO TEST
+
 nvm use 8
+
 npm run build
+
 node index.js
+
 pool mine cuda
 
 

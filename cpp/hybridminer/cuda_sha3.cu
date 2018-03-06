@@ -1,6 +1,7 @@
 #include <unistd.h>
 #include <time.h>
 
+#define LOOP_IN_GPU_OPTIMIZATION 2000
 #include <curand.h>
 #include <assert.h>
 #include <curand_kernel.h>
@@ -381,12 +382,12 @@ int tid = threadIdx.x + (blockIdx.x * blockDim.x);
   curandState_t state;
   /* we have to initialize the state */
   curand_init(now, tid, cnt, &state);
-for(int i =0; i<20;i++){
-
 	int len = 0;
 	for(len = 0 ; len < 52; len++){
 		message[len] = hash_prefix[len];
 	}
+for(int i =0; i<LOOP_IN_GPU_OPTIMIZATION;i++){
+
 	for(len = 0; len < 32; len++) {
 		char r = (char)curand(&state) % 256;
 		message[52+len] = r;
@@ -474,8 +475,8 @@ unsigned char * find_message(const char * challenge_target, const char * hash_pr
 
 		while (!h_done[0]) {
 			gpu_mine<<<number_blocks, number_threads>>>(d_challenge_hash, device_solution, d_done, d_hash_prefix, now,cnt);
-        cnt+=number_threads*number_blocks*20;
-//fprintf(stderr,"%u\n", cnt);
+        cnt+=number_threads*number_blocks*LOOP_IN_GPU_OPTIMIZATION;
+fprintf(stderr,"%u\n", cnt);
 			cudaMemcpy(h_done, d_done, sizeof(int), cudaMemcpyDeviceToHost);
 
 			cudaError_t cudaerr = cudaDeviceSynchronize();
