@@ -11,7 +11,7 @@
 #include "hybridminer.h"
 
 
-namespace miner {
+namespace Miner {
 
   using namespace Nan;
 
@@ -106,9 +106,19 @@ namespace miner {
 
   //need to make one of these for the gpu solver.. ?
   NAN_METHOD(hashes) {
-    uint32_t const value = CPUSolver::hashes;
+    uint32_t const cudaValue = CUDASolver::hashes;
+    CUDASolver::hashes = 0;
+
+    uint32_t const cpuValue = CPUSolver::hashes;
     CPUSolver::hashes = 0;
-    info.GetReturnValue().Set(value);
+
+    if(strcmp(hybridminer->getHardwareType().c_str(), "cuda") == 0)
+    {
+      info.GetReturnValue().Set(cudaValue);
+    }else{
+      info.GetReturnValue().Set(cpuValue);
+    }
+
   }
 
   // Defines the functions our add-on will export

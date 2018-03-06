@@ -28,6 +28,7 @@ public:
   void setMinerAddress(std::string const& minerAddress);
 
   void setHardwareType(std::string const& hardwareType);
+  const std::string getHardwareType();
 
 public:
   void run();

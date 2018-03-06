@@ -46,6 +46,11 @@ void HybridMiner::setHardwareType(std::string const& hardwareType)
 }
 
 
+const std::string HybridMiner::getHardwareType()
+{
+  return m_hardwareType;
+}
+
 void HybridMiner::setChallengeNumber(std::string const& challengeNumber)
 {
   if(strcmp(m_hardwareType.c_str(), "cuda") == 0)
@@ -84,7 +89,7 @@ void HybridMiner::run()
 
   if(  strcmp(m_hardwareType.c_str(), "cuda") == 0   )
   {
-    cout << "--StafindSolutionrting mining loop using CUDA-- \n";
+    cout << "--Starting mining loop using CUDA-- \n";
 
     m_bSolutionFound = false;
 

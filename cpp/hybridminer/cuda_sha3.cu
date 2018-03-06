@@ -398,6 +398,9 @@ for(int i =0; i<20;i++){
 	unsigned char output[output_len];
 	keccak(&message[0], str_len, &output[0], output_len);
 
+
+
+
 	if (compare_hash(&challenge_hash[0], &output[0], output_len))
 	{
 		memcpy(device_solution, message, str_len);
@@ -495,6 +498,10 @@ unsigned char * find_message(const char * challenge_target, const char * hash_pr
     fwrite(h_message , 84, 1 , fp );
 		fclose(fp);
     fprintf(stderr,"Total hashes: %u\n", cnt);
+
+    //for hashrate back to nodejs
+  //  hashes += cnt;
+
 
 	/*
    printf("MIKERS ANSWER IS : ");
