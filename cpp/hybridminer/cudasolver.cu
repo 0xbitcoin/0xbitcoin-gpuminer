@@ -148,54 +148,43 @@ void CUDASolver::init()
 }
 
 
- CUDASolver::bytes_t CUDASolver::findSolution( )
+CUDASolver::bytes_t CUDASolver::findSolution( )
 {
   cout << "CUDA is trying to find a solution :) \n ";
 
   cudaEventCreate(&start);
   cudaEventCreate(&stop);
 
-  /*  char hash_prefix[50];
-   char s_challenge_chars[32] ;
-   char m_address_chars[20] ;
-
-     strcpy (s_challenge_chars, s_challenge.c_str());
-
-
-
-  for(int i = 0; i < 32; i++){
-       cout <<  s_challenge_chars[i] << "\n";
-       hash_prefix[i] = s_challenge_chars[i];
-  }
-
-  for(int i = 32; i < 50; i++){
-       cout <<  m_address[i-32] << "\n";
-       hash_prefix[i] = m_address[i-32];
-  }*/
-
-
   unsigned   char  hash_prefix[52];
-    bytes_t challenge_bytes;
-    hexToBytes(s_challenge, challenge_bytes);
-    for(int i = 0; i < 32; i++){
-            hash_prefix[i] =(unsigned char) challenge_bytes[i];
-    }
-    for(int i = 0; i < 20; i++){
-    hash_prefix[i+32] = (unsigned char)m_address[i];
-    }
+std::string clean_challenge = s_challenge;
+bytes_t challenge_bytes(32);
+cout << "S CHALLENGE\t"<<  s_challenge << "\n";
+cout << "CLEAN CHALLENGE\t"<<  clean_challenge << "\n";
 
-    //m_address // 20 bytes right format
+hexToBytes(clean_challenge, challenge_bytes);
+for(int i = 0; i < 32; i++){
+	hash_prefix[i] =(unsigned char) challenge_bytes[i];
+}
+for(int i = 0; i < 20; i++){
+hash_prefix[i+32] = (unsigned char)m_address[i];
+}
+
+//m_address // 20 bytes right format
+	printf("Looking at prefix:\n");
+for(int i = 0; i < 52; i++){
+	printf("%02x",(unsigned char) hash_prefix[i]);
+}
+	printf("\n/prefix\n");
 
 
+unsigned char * s_solution = find_message(s_target.c_str(), (const char *)hash_prefix);
 
-
-
-  unsigned char * s_solution = find_message(s_target.c_str(), hash_prefix );
 
   CUDASolver::bytes_t byte_solution(32);
   for(int i = 52; i < 84; i++){
-    cout << (uint8_t)s_solution[i] << "\n";
-    byte_solution[i-52] = (uint8_t)s_solution[i];
+       byte_solution[i-52] = (uint8_t)s_solution[i];
+
+	cout << (uint8_t)s_solution[i] << "\n";
 
   }
   cudaEventDestroy(start);
@@ -203,6 +192,7 @@ void CUDASolver::init()
 
   return byte_solution;
 }
+
 
 
 std::string CUDASolver::hexStr( char* data, int len)
