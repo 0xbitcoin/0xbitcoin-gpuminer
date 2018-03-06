@@ -223,18 +223,23 @@ HOW IN THE HECK DO WE FORMAT THIS  vvvvvvvvvvvvvvvv LOL  --toast
   cout << "holyFuk: " << holyFuk << "\n";
 
 
-  CUDASolver::bytes_t byte_solution;
+
+
+  //make sure output goes to NODEJS
+  CUDASolver::bytes_t byte_solution = CUDASolver::bytes_t(31u);
 
 
 
-  hexToBytes(solutionString, byte_solution);
+  std::string fakeSolutionString("B1066551E041068F09A61680E5221934FF86231A19A13A9DCE307421850AD9D5");
+
+  hexToBytes(fakeSolutionString, byte_solution);
 
   cudaEventDestroy(start);
   cudaEventDestroy(stop);
 
   return byte_solution;
   // ac7f0000208e4038ac7f0000f0eeff27ac7f00004c753035ac7f0000ffffff00
-  //should be like  B1066551E041068F09A61680E5221934FF86231A19A13A9DCE307421850AD9D5
+  //should be like
 }
 
 std::string CUDASolver::hexStr( char* data, int len)
@@ -252,7 +257,8 @@ void CUDASolver::hexToBytes(std::string const& hex, bytes_t& bytes)
 {
 
     cout << "hex to bytes: " << hex << "\n";
-
+    cout << bytes.size()  << "\n";
+    cout << hex.length()  << "\n";
 
   assert(hex.length() % 2 == 0);
   assert(bytes.size() == (hex.length() / 2 - 1));

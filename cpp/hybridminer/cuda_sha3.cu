@@ -488,7 +488,7 @@ cnt+=number_threads*number_blocks*20;
     fp = fopen ("out.binary", "wb") ;
     fwrite(h_message , 84, 1 , fp );
 		fclose(fp);
-      fprintf(stderr,"Total hashes: %u\n", cnt);
+fprintf(stderr,"Total hashes: %u\n", cnt);
 
 		 printf("MIKERS ANSWER IS : ");
 		for (int j = 52; j < 84; j++)
@@ -497,7 +497,8 @@ cnt+=number_threads*number_blocks*20;
 		}
 		printf("\n");
 
-    return  h_message ;
+
+    return h_message;
 }
 
 /**
