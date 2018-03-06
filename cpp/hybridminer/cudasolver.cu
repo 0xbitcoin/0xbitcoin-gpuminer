@@ -155,7 +155,45 @@ CUDASolver::bytes_t CUDASolver::findSolution( )
   cudaEventCreate(&start);
   cudaEventCreate(&stop);
 
-  unsigned   char  hash_prefix[52];
+
+
+
+
+
+  	printf("Looking at target input:\n");
+
+
+     //padded with the 0x = 64+2
+unsigned  char  target_input[66];
+
+int target_length = s_target.size();
+
+
+ cout << target_length << "\n";  //59
+
+ int zeroes_to_pad = 66 - target_length;
+
+
+ for(int i = 0; i < zeroes_to_pad; i++){
+
+   target_input[i] =(unsigned char) 0;
+
+    cout << 0  ;
+}
+
+for(int i = 2; i < target_length; i++){
+
+	   target_input[i-2+zeroes_to_pad] =(unsigned char) s_target[i];
+
+     cout << s_target[i]  ;
+
+}
+     cout <<  "\n";
+
+
+
+
+unsigned   char  hash_prefix[52];
 std::string clean_challenge = s_challenge;
 bytes_t challenge_bytes(32);
 cout << "S CHALLENGE\t"<<  s_challenge << "\n";
@@ -177,7 +215,9 @@ for(int i = 0; i < 52; i++){
 	printf("\n/prefix\n");
 
 
-unsigned char * s_solution = find_message(s_target.c_str(), (const char *)hash_prefix);
+
+
+unsigned char * s_solution = find_message((const char *)target_input , (const char *)hash_prefix);
 
 
   CUDASolver::bytes_t byte_solution(32);
