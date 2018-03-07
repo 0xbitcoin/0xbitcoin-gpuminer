@@ -83,7 +83,8 @@ CUDASolver::CUDASolver() noexcept :
   m_buffer(ADDRESS_LENGTH + 2 * UINT256_LENGTH),
   m_buffer_tmp(ADDRESS_LENGTH + 2 * UINT256_LENGTH), //this has something to do with updateBuffer
   m_buffer_ready(false),
-  m_target_ready(false)
+  m_target_ready(false),
+  m_updated_gpu_inputs(false)	
 { }
 
 void CUDASolver::setAddress(std::string const& addr)
@@ -92,7 +93,9 @@ void CUDASolver::setAddress(std::string const& addr)
 
   assert(addr.length() == (ADDRESS_LENGTH * 2 + 2));
   hexToBytes(addr, m_address);
-  updateBuffer();
+  //updateBuffer();
+	
+  m_updated_gpu_inputs = true;
 }
 
 void CUDASolver::setChallenge(std::string const& chal)
@@ -103,7 +106,8 @@ void CUDASolver::setChallenge(std::string const& chal)
 
   assert(chal.length() == (UINT256_LENGTH * 2 + 2));
   hexToBytes(chal, m_challenge);
-  updateBuffer();
+  //updateBuffer();
+  m_updated_gpu_inputs = true;
 }
 
 void CUDASolver::setTarget(std::string const& target)
@@ -122,11 +126,18 @@ void CUDASolver::setTarget(std::string const& target)
     hexToBytes("0x" + t + target.substr(2), m_target_tmp);
   }
   m_target_ready = true;
+	
+  m_updated_gpu_inputs = true;
 }
 
 
+bool CUDASolver::requiresRestart()
+{
+ return m_updated_gpu_inputs;
+}
 
 // Buffer order: 1-challenge 2-ethAddress 3-solution
+/*
 void CUDASolver::updateBuffer()
 {
   // The idea is to have a double-buffer system in order not to try
@@ -137,7 +148,7 @@ void CUDASolver::updateBuffer()
     std::copy(m_address.cbegin(), m_address.cend(), m_buffer_tmp.begin() + m_challenge.size());
   }
   m_buffer_ready = true;
-}
+}*/
 
 
 //call the sha3.cu init func
@@ -161,9 +172,11 @@ void CUDASolver::stopFinding( )
 
 
 CUDASolver::bytes_t CUDASolver::findSolution( )
-{
+{  
+  m_updated_gpu_inputs = false;
+	
   cout << "CUDA is trying to find a solution :) \n ";
-
+	
   cudaEventCreate(&start);
   cudaEventCreate(&stop);
 
