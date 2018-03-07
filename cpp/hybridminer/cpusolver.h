@@ -34,9 +34,11 @@ public:
   static std::string bytesToString(bytes_t const& buffer);
 
   static bool lte(bytes_t const& left, bytes_t const& right);
+  
+  bool requiresRestart();
 
 private:
-  void updateBuffer();
+  //void updateBuffer();
 
   void hash(bytes_t const& solution, bytes_t& digest);
 
