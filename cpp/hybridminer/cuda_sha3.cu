@@ -453,6 +453,32 @@ int gcd(int a, int b) {
 }
 
 
+
+unsigned char * update_mining_inputs(const char * challenge_target, const char * hash_prefix) // can accept challenge
+{
+
+  int *d_done;
+  unsigned char *d_hash;
+  char *device_solution;
+
+  unsigned char * d_challenge_hash;
+  unsigned char * d_hash_prefix;
+
+  cudaMalloc((void**) &d_done, sizeof(int));
+  cudaMalloc((void**) &device_solution, 84); // solution
+  cudaMalloc((void**) &d_challenge_hash, 32);
+
+  cudaMalloc((void**) &d_hash_prefix, 52);
+
+  cudaMemcpy(d_done, h_done, sizeof(int), cudaMemcpyHostToDevice);
+
+  cudaMemcpy(d_challenge_hash, challenge_target, 32, cudaMemcpyHostToDevice);
+  cudaMemcpy(d_hash_prefix, hash_prefix, 52, cudaMemcpyHostToDevice);
+ 
+
+}
+
+
 unsigned char * find_message(const char * challenge_target, const char * hash_prefix) // can accept challenge
 {
 

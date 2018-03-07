@@ -34,11 +34,11 @@ public:
   static std::string bytesToString(bytes_t const& buffer);
 
   static bool lte(bytes_t const& left, bytes_t const& right);
-  
-  bool requiresRestart();
+
+
 
 private:
-  //void updateBuffer();
+   void updateBuffer();
 
   void hash(bytes_t const& solution, bytes_t& digest);
 
@@ -52,8 +52,6 @@ private:
   std::atomic<bool> m_buffer_ready;
   std::atomic<bool> m_target_ready;
   
-  std::atomic<bool> m_updated_gpu_inputs;
-
 public:
   static std::atomic<uint32_t> hashes;
 };
