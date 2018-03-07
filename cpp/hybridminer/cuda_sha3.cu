@@ -442,7 +442,7 @@ void gpu_init()
     number_threads = device_prop.maxThreadsPerBlock;
     number_multi_processors = device_prop.multiProcessorCount;
     max_threads_per_mp = device_prop.maxThreadsPerMultiProcessor;
-    block_size = 512;//max_threads_per_mp / gcd(max_threads_per_mp, number_threads));
+    block_size = 128;//max_threads_per_mp / gcd(max_threads_per_mp, number_threads));
     number_threads = max_threads_per_mp / block_size;
     number_blocks = block_size * number_multi_processors ;
     clock_speed = (int) (device_prop.memoryClockRate * 1000 * 1000);    // convert from GHz to hertz
