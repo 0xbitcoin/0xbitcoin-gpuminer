@@ -49,6 +49,8 @@ private:
   std::mutex m_target_mutex;
   std::atomic<bool> m_buffer_ready;
   std::atomic<bool> m_target_ready;
+  
+  std::atomic<bool> m_updated_gpu_inputs;
 
 public:
   static std::atomic<uint32_t> hashes;
