@@ -142,7 +142,10 @@ bool CUDASolver::requiresRestart()
   //This will restart the miner if needed
 void CUDASolver::updateGPULoop()
 {
-  if( m_updated_gpu_inputs )
+  if( m_updated_gpu_inputs
+    && m_target_ready
+    && m_challenge.size() > 0  
+    && m_address.size() > 0 )
   {
     m_updated_gpu_inputs = false;
 
