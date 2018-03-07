@@ -1,7 +1,9 @@
 #include <unistd.h>
 #include <time.h>
 
-#define LOOP_IN_GPU_OPTIMIZATION 2000
+#include <sys/time.h>
+
+#define LOOP_IN_GPU_OPTIMIZATION 10000
 #include <curand.h>
 #include <assert.h>
 #include <curand_kernel.h>
@@ -371,14 +373,23 @@ __device__ void keccak(const char *message, int message_len, unsigned char *outp
 }
 
 // hash length is 256 bits
-__global__ void gpu_mine(unsigned char *challenge_hash, char * device_solution, int *done,  const unsigned char * hash_prefix, int now, int cnt)
+__global__ void gpu_mine( unsigned char *challenge_hash, char * device_solution, int *done,  const unsigned char * hash_prefix, int now, int cnt)
 {
-
-	int str_len = 84;
-  char * message = (char *)malloc(str_len);;
-	char * hash =(char *) malloc(32);
+    __shared__ char * message_all;
+    __shared__ char * hash_all;
+    if (threadIdx.x == 0) {
+        size_t size = blockDim.x * 84;
+        message_all = (char*)malloc(size);
+        size = blockDim.x * 32;
+        hash_all = (char*)malloc(size);
+    }
+    __syncthreads();
 
 int tid = threadIdx.x + (blockIdx.x * blockDim.x);
+char * message = &message_all[84*(threadIdx.x)];
+char * hash =&hash_all[32*(threadIdx.x)];
+
+int str_len = 84;
 
   curandState_t state;
   /* we have to initialize the state */
@@ -402,14 +413,24 @@ for(int i =0; i<LOOP_IN_GPU_OPTIMIZATION;i++){
 
 	if (compare_hash(&challenge_hash[0], &output[0], output_len))
 	{
-		memcpy(device_solution, message, str_len);
-		done[0] = 1;
+		if(done[0] != 1){
+			done[0] = 1;
+			memcpy(device_solution, message, str_len);
+		}
 		return;
 	}
 
 }
-  free(message);
-	free(hash);
+    // Ensure all threads complete before freeing 
+    __syncthreads();
+
+    // Only one thread may free the memory!
+    if (threadIdx.x == 0)
+{
+
+  free(message_all);
+	free(hash_all);
+}
 }
 
 
@@ -442,7 +463,7 @@ void gpu_init()
     number_threads = device_prop.maxThreadsPerBlock;
     number_multi_processors = device_prop.multiProcessorCount;
     max_threads_per_mp = device_prop.maxThreadsPerMultiProcessor;
-    block_size = 512;//max_threads_per_mp / gcd(max_threads_per_mp, number_threads));
+    block_size = 128;//max_threads_per_mp / gcd(max_threads_per_mp, number_threads));
     number_threads = max_threads_per_mp / block_size;
     number_blocks = block_size * number_multi_processors ;
     clock_speed = (int) (device_prop.memoryClockRate * 1000 * 1000);    // convert from GHz to hertz
@@ -462,7 +483,6 @@ unsigned char * find_message(const char * challenge_target, const char * hash_pr
 
 
 		int *d_done;
-		unsigned char *d_hash;
 		char *device_solution;
 
 		unsigned char * d_challenge_hash;
@@ -478,27 +498,41 @@ unsigned char * find_message(const char * challenge_target, const char * hash_pr
 
 		cudaMemcpy(d_challenge_hash, challenge_target, 32, cudaMemcpyHostToDevice);
 		cudaMemcpy(d_hash_prefix, hash_prefix, 52, cudaMemcpyHostToDevice);
-		cudaThreadSetLimit(cudaLimitMallocHeapSize,512*1024*1024);
 
+		cudaThreadSetLimit(cudaLimitMallocHeapSize,2*(84*number_blocks*number_threads + 32*number_blocks*number_threads));
 		int now = (int)time(0);
-		int cnt = 0;
+		unsigned long long cnt = 0;
+  struct timeval t0;
+  struct timeval t1;
 
+
+
+
+gettimeofday(&t0, 0);
 
 
 		while (!h_done[0]) {
-			gpu_mine<<<number_blocks, number_threads>>>(d_challenge_hash, device_solution, d_done, d_hash_prefix, now,cnt);
-        cnt+=number_threads*number_blocks*LOOP_IN_GPU_OPTIMIZATION;
-fprintf(stderr,"Total Hashes: %u\n", cnt);
-			cudaMemcpy(h_done, d_done, sizeof(int), cudaMemcpyDeviceToHost);
-
+			gpu_mine<<<number_blocks, number_threads>>>( d_challenge_hash, device_solution, d_done, d_hash_prefix, now,cnt);
 			cudaError_t cudaerr = cudaDeviceSynchronize();
 			if (cudaerr != cudaSuccess) {
 				h_done[0] = 1;
 
         cout << cudaerr;
 				printf("kernel launch failed with error \"%s\".\n", cudaGetErrorString(cudaerr));
-    //    exit(EXIT_FAILURE);
+        exit(EXIT_FAILURE);
 			}
+        cnt+=number_threads*number_blocks*LOOP_IN_GPU_OPTIMIZATION;
+if(time(0)!=now)
+
+/* ... */
+gettimeofday(&t1, 0);
+long elapsed = (t1.tv_sec-t0.tv_sec)*1000000 + t1.tv_usec-t0.tv_usec;
+
+
+
+fprintf(stderr,"Total Hashes: %u\tHash Rate:%f MH/s\n", cnt, (float(cnt)/float(elapsed)));
+
+			cudaMemcpy(h_done, d_done, sizeof(int), cudaMemcpyDeviceToHost);
 		}
 
 	unsigned	 char * h_message = (unsigned char*)malloc(84);
@@ -518,6 +552,11 @@ fprintf(stderr,"Total Hashes: %u\n", cnt);
 		printf("\n");
 */
 
+		cudaFree(d_done);
+		cudaFree(device_solution);
+		cudaFree(d_challenge_hash);
+
+		cudaFree(d_hash_prefix);
     return h_message;
 }
 
@@ -545,13 +584,8 @@ int init(int argc, char **argv)
 	fread(&challenge_target, 32, 1, fc);
 
 	gpu_init();
-	cudaEventCreate(&start);
-	cudaEventCreate(&stop);
 
 	find_message(challenge_target, hash_prefix);
-
-	cudaEventDestroy(start);
-	cudaEventDestroy(stop);
 
 	return EXIT_SUCCESS;
 }
