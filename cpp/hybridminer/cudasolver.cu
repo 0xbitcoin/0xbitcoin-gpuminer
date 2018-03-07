@@ -171,35 +171,33 @@ CUDASolver::bytes_t CUDASolver::findSolution( )
 
   	printf("Looking at target input:\n");
 
-
-     //padded with the 0x = 64+2
-unsigned  char  target_input[64];
-
-int target_length = s_target.size();
-
-
- cout << target_length << "\n";  //59
-
- int zeroes_to_pad = 66 - target_length;
-
-
- for(int i = 0; i < zeroes_to_pad; i++){
-
-   target_input[i] =(unsigned char) 0;
-
-    cout << 0  ;
+  s_target =  std::string("0x00000004fec04fec04fec04fec04fec04fec04fec04fec04fec04fec04fec04f");
+if(s_target.length() < 66){
+	std::string zeros = std::string(66-s_target.length(),'0');
+	std::string s = "0x" + zeros + s_target.substr(2,s_target.length());
+	s_target=s;
+	
 }
 
-for(int i = 2; i < target_length; i++){
+ 
 
-	   target_input[i-2+zeroes_to_pad] =(unsigned char) s_target[i];
+  unsigned char  target_input[64];
+  bytes_t target_bytes(32);
 
-     cout << s_target[i]  ;
+  hexToBytes(s_target, target_bytes);
 
-}
-     cout <<  "\n";
+  for(int i = 0; i < 32; i++){
+  	target_input[i] =(unsigned char) target_bytes[i];
+  }
 
 
+  for(int i = 0; i < 32; i++){
+    printf("%02x",(unsigned char) target_input[i]);
+  //  cout <<  "\n";
+  }
+
+
+ 
 
 
 unsigned   char  hash_prefix[52];
@@ -208,6 +206,15 @@ bytes_t challenge_bytes(32);
 
 
 hexToBytes(clean_challenge, challenge_bytes);
+
+
+
+//std::string target_string = std::string((char *)target_input, 64);
+//bytes_t target_bytes(32);
+//hexToBytes(target_string, target_bytes);
+
+
+
 for(int i = 0; i < 32; i++){
 	hash_prefix[i] =(unsigned char) challenge_bytes[i];
 }
@@ -215,18 +222,17 @@ for(int i = 0; i < 20; i++){
 hash_prefix[i+32] = (unsigned char)m_address[i];
 }
 
- /*
+
 	printf("Looking at prefix:\n");
 for(int i = 0; i < 52; i++){
 	printf("%02x",(unsigned char) hash_prefix[i]);
 }
 	printf("\n/prefix\n");
-*/
-
 
 
 unsigned char * s_solution = find_message((const char *)target_input , (const char *)hash_prefix);
 
+//here
 
   CUDASolver::bytes_t byte_solution(32);
   for(int i = 52; i < 84; i++){

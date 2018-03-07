@@ -488,7 +488,7 @@ unsigned char * find_message(const char * challenge_target, const char * hash_pr
 		while (!h_done[0]) {
 			gpu_mine<<<number_blocks, number_threads>>>(d_challenge_hash, device_solution, d_done, d_hash_prefix, now,cnt);
         cnt+=number_threads*number_blocks*LOOP_IN_GPU_OPTIMIZATION;
-fprintf(stderr,"%u\n", cnt);
+fprintf(stderr,"Total Hashes: %u\n", cnt);
 			cudaMemcpy(h_done, d_done, sizeof(int), cudaMemcpyDeviceToHost);
 
 			cudaError_t cudaerr = cudaDeviceSynchronize();
