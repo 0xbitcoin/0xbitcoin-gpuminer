@@ -80,11 +80,11 @@ void HybridMiner::setMinerAddress(std::string const& minerAddress)
 void HybridMiner::run()
 {
 
-  cout << "--Starting mining loop hardware type is: " << m_hardwareType.c_str();
+  cout << "\n--Starting mining loop hardware type is: " << m_hardwareType.c_str();
 
   if(  strcmp(m_hardwareType.c_str(), "cuda") == 0   )
   {
-    cout << "--StafindSolutionrting mining loop using CUDA-- \n";
+    cout << "\n--Starting mining loop using CUDA-- \n";
 
     m_bSolutionFound = false;
 
@@ -98,7 +98,7 @@ void HybridMiner::run()
 
 
      solutionBytes = cudaSolver.findSolution( );
-     cout << "--GPU returned a soln ! -- \n";
+     cout << "\n--GPU returned a soln ! -- \n";
 
 
 
@@ -114,7 +114,7 @@ void HybridMiner::run()
      //this sets m_bExit true
      stop();
   }else{
-    cout << "--Starting mining loop using CPU-- \n";
+    cout << "\n--Starting mining loop using CPU-- \n";
 
     m_bExit = m_bSolutionFound = false;
 

@@ -169,17 +169,17 @@ CUDASolver::bytes_t CUDASolver::findSolution( )
 
 
 
-  	printf("Looking at target input:\n");
+  	printf("Target input:\n");
 
   s_target =  std::string("0x00000004fec04fec04fec04fec04fec04fec04fec04fec04fec04fec04fec04f");
 if(s_target.length() < 66){
 	std::string zeros = std::string(66-s_target.length(),'0');
 	std::string s = "0x" + zeros + s_target.substr(2,s_target.length());
 	s_target=s;
-	
+
 }
 
- 
+
 
   unsigned char  target_input[64];
   bytes_t target_bytes(32);
@@ -197,7 +197,7 @@ if(s_target.length() < 66){
   }
 
 
- 
+
 
 
 unsigned   char  hash_prefix[52];
@@ -223,7 +223,7 @@ hash_prefix[i+32] = (unsigned char)m_address[i];
 }
 
 
-	printf("Looking at prefix:\n");
+	printf("Challenge+Address:\n");
 for(int i = 0; i < 52; i++){
 	printf("%02x",(unsigned char) hash_prefix[i]);
 }
