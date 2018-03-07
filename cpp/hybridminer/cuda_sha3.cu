@@ -1,7 +1,7 @@
 #include <unistd.h>
 #include <time.h>
 
-#define LOOP_IN_GPU_OPTIMIZATION 2000
+#define LOOP_IN_GPU_OPTIMIZATION 10000
 #include <curand.h>
 #include <assert.h>
 #include <curand_kernel.h>
@@ -30,6 +30,8 @@ void gpu_init();
 void runBenchmarks();
 char *read_in_messages();
 int gcd(int a, int b);
+
+int cnt = 0;
 
 // updated message the gpu_init() function
 int clock_speed;
@@ -452,7 +454,12 @@ int gcd(int a, int b) {
     return (a == 0) ? b : gcd(b % a, a);
 }
 
-
+int getHashCount( ) {
+   return cnt;
+}
+void resetHashCount( ) {
+     cnt = 0;
+}
 
 unsigned char * update_mining_inputs(const char * challenge_target, const char * hash_prefix) // can accept challenge
 {
@@ -474,9 +481,13 @@ unsigned char * update_mining_inputs(const char * challenge_target, const char *
 
   cudaMemcpy(d_challenge_hash, challenge_target, 32, cudaMemcpyHostToDevice);
   cudaMemcpy(d_hash_prefix, hash_prefix, 52, cudaMemcpyHostToDevice);
- 
+
 
 }
+
+
+
+
 
 
 unsigned char * find_message(const char * challenge_target, const char * hash_prefix) // can accept challenge
@@ -507,7 +518,7 @@ unsigned char * find_message(const char * challenge_target, const char * hash_pr
 		cudaThreadSetLimit(cudaLimitMallocHeapSize,512*1024*1024);
 
 		int now = (int)time(0);
-		int cnt = 0;
+		 cnt = 0;
 
 
 
