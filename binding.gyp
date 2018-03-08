@@ -75,6 +75,7 @@
             ],
 
             'library_dirs': [
+              '<(cuda_root)/lib/<(arch)',
               '/usr/local/lib',
               '/usr/local/cuda/lib64'
             ],
