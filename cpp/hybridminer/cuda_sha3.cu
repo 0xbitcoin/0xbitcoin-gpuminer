@@ -1,7 +1,6 @@
 #include <unistd.h>
 #include <time.h>
 
-#include <sys/time.h>
 
 #define LOOP_IN_GPU_OPTIMIZATION 10000
 #include <curand.h>
