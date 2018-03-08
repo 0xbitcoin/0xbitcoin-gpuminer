@@ -53,7 +53,7 @@
           [ 'OS=="linux"', {
             'libraries': ['-lcuda', '-lcudart'],
             'include_dirs': ['/usr/local/include'],
-            'library_dirs': ['/usr/local/lib64', '/usr/local/cuda/lib', './cuda']
+            'library_dirs': ['/usr/local/lib', '/usr/local/cuda/lib64', './cuda']
           }],
           [ 'OS=="win"', {
             'conditions': [
