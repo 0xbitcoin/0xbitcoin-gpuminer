@@ -41,6 +41,9 @@ int number_threads;
 int max_threads_per_mp;
 int h_done[1] = {0};
 
+		unsigned long long cnt = 0;
+
+
 int num_messages;
 const int digest_size = 256;
 const int digest_size_bytes = digest_size / 8;
@@ -373,7 +376,7 @@ __device__ void keccak(const char *message, int message_len, unsigned char *outp
 }
 
 // hash length is 256 bits
-__global__ void gpu_mine( unsigned char *challenge_hash, char * device_solution, int *done,  const unsigned char * hash_prefix, int now, int cnt)
+__global__ void gpu_mine( unsigned char *challenge_hash, char * device_solution, int *done,  const unsigned char * hash_prefix,int now, int cnt)
 {
     __shared__ char * message_all;
     __shared__ char * hash_all;
@@ -390,6 +393,7 @@ char * message = &message_all[84*(threadIdx.x)];
 char * hash =&hash_all[32*(threadIdx.x)];
 
 int str_len = 84;
+
 
   curandState_t state;
   /* we have to initialize the state */
@@ -474,6 +478,43 @@ int gcd(int a, int b) {
 }
 
 
+int getHashCount( ) {
+   return cnt;
+}
+void resetHashCount( ) {
+     cnt = 0;
+}
+
+unsigned char * update_mining_inputs(const char * challenge_target, const char * hash_prefix) // can accept challenge
+{
+
+  int *d_done;
+  unsigned char *d_hash;
+  char *device_solution;
+
+  unsigned char * d_challenge_hash;
+  unsigned char * d_hash_prefix;
+
+  cudaMalloc((void**) &d_done, sizeof(int));
+  cudaMalloc((void**) &device_solution, 84); // solution
+  cudaMalloc((void**) &d_challenge_hash, 32);
+
+  cudaMalloc((void**) &d_hash_prefix, 52);
+
+  cudaMemcpy(d_done, h_done, sizeof(int), cudaMemcpyHostToDevice);
+
+  cudaMemcpy(d_challenge_hash, challenge_target, 32, cudaMemcpyHostToDevice);
+  cudaMemcpy(d_hash_prefix, hash_prefix, 52, cudaMemcpyHostToDevice);
+
+
+}
+
+
+
+
+
+
+
 unsigned char * find_message(const char * challenge_target, const char * hash_prefix) // can accept challenge
 {
 
@@ -500,19 +541,13 @@ unsigned char * find_message(const char * challenge_target, const char * hash_pr
 		cudaMemcpy(d_hash_prefix, hash_prefix, 52, cudaMemcpyHostToDevice);
 
 		cudaThreadSetLimit(cudaLimitMallocHeapSize,2*(84*number_blocks*number_threads + 32*number_blocks*number_threads));
-		int now = (int)time(0);
-		unsigned long long cnt = 0;
-  struct timeval t0;
-  struct timeval t1;
 
-
-
-
-gettimeofday(&t0, 0);
+      int now = (int)time(0);
+		  cnt = 0;
 
 
 		while (!h_done[0]) {
-			gpu_mine<<<number_blocks, number_threads>>>( d_challenge_hash, device_solution, d_done, d_hash_prefix, now,cnt);
+			gpu_mine<<<number_blocks, number_threads>>>( d_challenge_hash, device_solution, d_done, d_hash_prefix,now,cnt);
 			cudaError_t cudaerr = cudaDeviceSynchronize();
 			if (cudaerr != cudaSuccess) {
 				h_done[0] = 1;
@@ -522,15 +557,10 @@ gettimeofday(&t0, 0);
         exit(EXIT_FAILURE);
 			}
         cnt+=number_threads*number_blocks*LOOP_IN_GPU_OPTIMIZATION;
-if(time(0)!=now)
-
-/* ... */
-gettimeofday(&t1, 0);
-long elapsed = (t1.tv_sec-t0.tv_sec)*1000000 + t1.tv_usec-t0.tv_usec;
 
 
 
-fprintf(stderr,"Total Hashes: %u\tHash Rate:%f MH/s\n", cnt, (float(cnt)/float(elapsed)));
+          fprintf(stderr,"Total Hashes: %u\n", cnt );
 
 			cudaMemcpy(h_done, d_done, sizeof(int), cudaMemcpyDeviceToHost);
 		}
