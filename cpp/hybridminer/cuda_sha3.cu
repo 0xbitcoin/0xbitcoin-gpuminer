@@ -454,10 +454,7 @@ void gpu_init()
     int device_count, block_size;
 
     cudaGetDeviceCount(&device_count);
-    if (device_count != 1) {
-        printf("Only want to test a single GPU, exiting...\n");
-        exit(EXIT_FAILURE);
-    }
+
 
     if (cudaGetDeviceProperties(&device_prop, 0) != cudaSuccess) {
         printf("Problem getting properties for device, exiting...\n");
