@@ -134,6 +134,18 @@ void CUDASolver::setTarget(std::string const& target)
 }
 
 
+
+
+
+void CUDASolver::setBlocksize(int size)
+{
+   setBlocksize(size);
+}
+void CUDASolver::setThreadsize(int size)
+{
+   setThreadsize(size);
+}
+
 bool CUDASolver::requiresRestart()
 {
  return m_updated_gpu_inputs;

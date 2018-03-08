@@ -79,6 +79,22 @@ namespace miner {
     info.GetReturnValue().SetUndefined();
   }
 
+  NAN_METHOD(setThreadsize) {
+    MaybeLocal<v8::Integer> inp = Nan::To<v8::Integer>(info[0]);
+    if (!inp.IsEmpty()) {
+      hybridminer->setThreadsize(std::int(*Nan::Integer(inp.ToLocalChecked())));
+    }
+    info.GetReturnValue().SetUndefined();
+  }
+
+  NAN_METHOD(setBlocksize) {
+    MaybeLocal<v8::Integer> inp = Nan::To<v8::Integer>(info[0]);
+    if (!inp.IsEmpty()) {
+      hybridminer->setBlocksize(std::int(*Nan::Integer(inp.ToLocalChecked())));
+    }
+    info.GetReturnValue().SetUndefined();
+  }
+
   NAN_METHOD(setChallengeNumber) {
     MaybeLocal<v8::String> inp = Nan::To<v8::String>(info[0]);
     if (!inp.IsEmpty()) {
@@ -120,6 +136,16 @@ namespace miner {
     Set(target
       , New<v8::String>("stop").ToLocalChecked()
       , New<v8::FunctionTemplate>(stop)->GetFunction());
+
+    Set(target
+      , New<v8::Integer>("setBlocksize").ToLocalChecked()
+      , New<v8::FunctionTemplate>(setBlocksize)->GetFunction();
+    );
+
+    Set(target
+      , New<v8::Integer>("setThreadsize").ToLocalChecked()
+      , New<v8::FunctionTemplate>(setThreadsize)->GetFunction();
+    );
 
     Set(target
       , New<v8::String>("setHardwareType").ToLocalChecked()

@@ -53,13 +53,18 @@ int number_threads;
 int max_threads_per_mp;
 int h_done[1] = {0};
 
-		unsigned long long cnt = 0;
+unsigned long long cnt = 0;
 
 
 int num_messages;
 const int digest_size = 256;
 const int digest_size_bytes = digest_size / 8;
 const size_t str_length = 7;	//change for different sizes
+
+int gpu_blocksize = HARDCODED_BLOCKSIZE;
+int gpu_threadsize = HARDCODED_THREADSIZE;
+
+
 
 cudaEvent_t start, stop;
 
@@ -438,6 +443,17 @@ void stop_solving()
 }
 
 
+
+void setBlocksize(int blocksize)
+{
+   gpu_blocksize = blocksize;
+}
+
+void setThreadsize(int threadsize)
+{
+   gpu_threadsize = threadsize;
+}
+
 /**
  * Initializes the global variables by calling the cudaGetDeviceProperties().
  */
@@ -459,8 +475,8 @@ void gpu_init()
     max_threads_per_mp = device_prop.maxThreadsPerMultiProcessor;
 
 
-    number_threads = HARDCODED_THREADSIZE;
-    number_blocks = HARDCODED_BLOCKSIZE;
+    number_threads = gpu_threadsize;
+    number_blocks = gpu_blocksize;
 
     clock_speed = (int) (device_prop.memoryClockRate * 1000 * 1000);    // convert from GHz to hertz
 }
