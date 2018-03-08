@@ -71,7 +71,8 @@
 
             'libraries': [
               '-lcuda',
-              '-lcudart'
+              '-lcudart',
+              '<(module_root_dir)/build/Release/obj/hybridminer/cudasolver.o'
             ],
 
             'library_dirs': [
