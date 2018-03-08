@@ -72,7 +72,7 @@ static void HexToBytes(std::string const& hex, uint8_t bytes[])
 
 
 // static
-std::atomic<uint32_t> CUDASolver::hashes(0u); // statistics only
+//std::atomic<uint32_t> CUDASolver::hashes(0u); // statistics only
 
 
 CUDASolver::CUDASolver() noexcept :
@@ -86,6 +86,17 @@ CUDASolver::CUDASolver() noexcept :
   m_target_ready(false),
   m_updated_gpu_inputs(false)
 { }
+
+uint32_t CUDASolver::getHashCount( )
+{
+  return getHashCount();
+}
+
+void CUDASolver::resetHashCount( )
+{
+  resetHashCount();
+}
+
 
 void CUDASolver::setAddress(std::string const& addr)
 {
