@@ -29,20 +29,20 @@
            'extension': 'cu',
            'inputs': ['<(RULE_INPUT_PATH)'],
            'outputs':[ '<(INTERMEDIATE_DIR)/<(RULE_INPUT_ROOT).o'],
-           'rule_name': 'cuda on linux',
-           'message': "compile cuda file on linux",
-           'process_outputs_as_sources': 1,
-           'action': [
-              'nvcc',
-               '-std=c++11',
-              	'-Xcompiler',
-              	'-fpic',
-              	'-c',
-              '-o',
-              '<@(_outputs)',
-              '<@(_inputs)'
-           ],
-      }],
+           'conditions': [
+           [ 'OS=="win"',  
+              {'rule_name': 'cuda on windows',
+               'message': "compile cuda file on windows",
+               'process_outputs_as_sources': 0,
+               'action': ['nvcc --std=c++11 -c <(_inputs) -o  <(_outputs)'],
+               }, 
+             {'rule_name': 'cuda on linux',
+               'message': "compile cuda file on linux",
+               'process_outputs_as_sources': 1,
+               'action': ['nvcc','-std=c++11','-Xcompiler','-fpic','-c',
+                  '<@(_inputs)','-o','<@(_outputs)'],
+             }
+           ]]}],
 
          'conditions': [
           [ 'OS=="mac"', {
