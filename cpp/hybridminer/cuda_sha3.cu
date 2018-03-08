@@ -481,7 +481,7 @@ void resetHashCount( ) {
      cnt = 0;
 }
 
-unsigned char * update_mining_inputs(const char * challenge_target, const char * hash_prefix) // can accept challenge
+void update_mining_inputs(const char * challenge_target, const char * hash_prefix) // can accept challenge
 {
 
   int *d_done;
