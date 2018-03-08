@@ -59,12 +59,20 @@ pool mine cuda
 
 ### Building from Source
 
-#### Setup (Windows/Linux)
-1. Install NodeJS 8.9
+#### Setup (Linux)
+1. Install NodeJS 8.9 and CUDA Toolkit
 2. Run 'npm install yarn -g' to install yarn package manager
 3. Clone/download the project
 4. Open a terminal, cd into the project folder and run 'yarn' to install dependencies
-5. Run the command 'npm run build' to build C files with node-gyp
+5. Run the command 'npm run build' to build C files with node-gyp.
+6. Start the miner with 'node index.js'
+
+#### Setup (Windows)
+1. Install NodeJS 8.9 and CUDA Toolkit 9.1
+2. Run 'npm install yarn -g' to install yarn package manager
+3. Clone/download the project
+4. Open a terminal, cd into the project folder and run 'yarn' to install dependencies
+5. Run the command 'npm run build' to build C files with node-gyp. If you get an error "unsupported Microsoft Visual Studio version" then you will need to run `npm config set msvs_version 2015` first. If you get an error "Could not load the Visual C++ Component", run `npm install -g windows-build-tools` in an administrative command prompt first.
 6. Start the miner with 'node index.js'
 
 #### Setup (Mac)
