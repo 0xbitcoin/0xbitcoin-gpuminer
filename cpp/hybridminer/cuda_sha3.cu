@@ -1,10 +1,21 @@
+// magic numbers we need to tune
+#define LOOP_IN_GPU_OPTIMIZATION 10000
+#define HARDCODED_BLOCKSIZE 256
+#define HARDCODED_THREADSIZE 256
+// magic numbers we need to tune
+
+
+
+
 #if !defined(_WIN32)
 #include <unistd.h>
 #endif
+
+
 #include <time.h>
 
 
-#define LOOP_IN_GPU_OPTIMIZATION 10000
+
 #include <curand.h>
 #include <assert.h>
 #include <curand_kernel.h>
@@ -446,9 +457,11 @@ void gpu_init()
     number_threads = device_prop.maxThreadsPerBlock;
     number_multi_processors = device_prop.multiProcessorCount;
     max_threads_per_mp = device_prop.maxThreadsPerMultiProcessor;
-    block_size = 128;//max_threads_per_mp / gcd(max_threads_per_mp, number_threads));
-    number_threads = max_threads_per_mp / block_size;
-    number_blocks = block_size * number_multi_processors ;
+
+
+    number_threads = HARDCODED_THREADSIZE;
+    number_blocks = HARDCODED_BLOCKSIZE;
+
     clock_speed = (int) (device_prop.memoryClockRate * 1000 * 1000);    // convert from GHz to hertz
 }
 
