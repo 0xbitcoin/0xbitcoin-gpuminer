@@ -164,15 +164,17 @@ LDFLAGS_Debug := \
 	-pthread \
 	-rdynamic \
 	-m64 \
-	-L/usr/local/lib \
-	-L/usr/local/cuda/lib64
+	-L/usr/local/lib64 \
+	-L/usr/local/cuda/lib \
+	-L./cudaa
 
 LDFLAGS_Release := \
 	-pthread \
 	-rdynamic \
 	-m64 \
-	-L/usr/local/lib \
-	-L/usr/local/cuda/lib64
+	-L/usr/local/lib64 \
+	-L/usr/local/cuda/lib \
+	-L./cudaa
 
 LIBS := \
 	-lcuda \

@@ -10,7 +10,7 @@
       "target_name": "hybridminer",
       "sources": [
         "cpp/hybridminer/addon.cc",
-         
+
         "cpp/hybridminer/hybridminer.cpp",
         "cpp/hybridminer/cpusolver.cpp",
         "cpp/hybridminer/cudasolver.cu",
@@ -53,7 +53,7 @@
           [ 'OS=="linux"', {
             'libraries': ['-lcuda', '-lcudart'],
             'include_dirs': ['/usr/local/include'],
-            'library_dirs': ['/usr/local/lib', '/usr/local/cuda/lib64']
+            'library_dirs': ['/usr/local/lib64', '/usr/local/cuda/lib','./cuda']
           }],
           [ 'OS=="win"', {
             'conditions': [
