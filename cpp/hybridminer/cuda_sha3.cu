@@ -375,21 +375,12 @@ __device__ void keccak(const char *message, int message_len, unsigned char *outp
 }
 
 // hash length is 256 bits
-__global__ void gpu_mine( unsigned char *challenge_hash, char * device_solution, int *done,  const unsigned char * hash_prefix,int now, int cnt)
+__global__ void gpu_mine( char * working_memory_hash, char * working_memory_nonce, unsigned char *challenge_hash, char * device_solution, int *done,  const unsigned char * hash_prefix,int now, int cnt)
 {
-    __shared__ char * message_all;
-    __shared__ char * hash_all;
-    if (threadIdx.x == 0) {
-        size_t size = blockDim.x * 84;
-        message_all = (char*)malloc(size);
-        size = blockDim.x * 32;
-        hash_all = (char*)malloc(size);
-    }
-    __syncthreads();
 
 int tid = threadIdx.x + (blockIdx.x * blockDim.x);
-char * message = &message_all[84*(threadIdx.x)];
-char * hash =&hash_all[32*(threadIdx.x)];
+char * message = &working_memory_nonce[84*tid];
+char * hash =&working_memory_hash[32*(tid)];
 
 int str_len = 84;
 
@@ -423,16 +414,6 @@ for(int i =0; i<LOOP_IN_GPU_OPTIMIZATION;i++){
 		return;
 	}
 
-}
-    // Ensure all threads complete before freeing
-    __syncthreads();
-
-    // Only one thread may free the memory!
-    if (threadIdx.x == 0)
-{
-
-  free(message_all);
-	free(hash_all);
 }
 }
 
@@ -538,12 +519,19 @@ unsigned char * find_message(const char * challenge_target, const char * hash_pr
 
 		cudaThreadSetLimit(cudaLimitMallocHeapSize,2*(84*number_blocks*number_threads + 32*number_blocks*number_threads));
 
+		unsigned int workers = number_blocks * number_threads;
+		char * working_memory_hash;
+	        cudaMallocManaged(&working_memory_hash, workers*32);
+		char * working_memory_nonce;
+	        cudaMallocManaged(&working_memory_nonce, workers*84);
+
+
       int now = (int)time(0);
 		  cnt = 0;
 
 
 		while (!h_done[0]) {
-			gpu_mine<<<number_blocks, number_threads>>>( d_challenge_hash, device_solution, d_done, d_hash_prefix,now,cnt);
+			gpu_mine<<<number_blocks, number_threads>>>(working_memory_hash, working_memory_nonce, d_challenge_hash, device_solution, d_done, d_hash_prefix,now,cnt);
 			cudaError_t cudaerr = cudaDeviceSynchronize();
 			if (cudaerr != cudaSuccess) {
 				h_done[0] = 1;
@@ -583,6 +571,8 @@ unsigned char * find_message(const char * challenge_target, const char * hash_pr
 		cudaFree(d_challenge_hash);
 
 		cudaFree(d_hash_prefix);
+		cudaFree(working_memory_hash);
+		cudaFree(working_memory_nonce);
     return h_message;
 }
 
