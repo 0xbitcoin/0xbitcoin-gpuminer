@@ -455,7 +455,7 @@ int gcd(int a, int b) {
 }
 
 
-uint32_t getHashCount( ) {
+int getHashCount( ) {
    return cnt;
 }
 void resetHashCount( ) {

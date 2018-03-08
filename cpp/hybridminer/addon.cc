@@ -106,9 +106,8 @@ namespace miner {
 
   //need to make one of these for the gpu solver.. ?
   NAN_METHOD(hashes) {
-    uint32_t const value = hybridminer->getHashCount(); //CPUSolver::hashes;
-    hybridminer->resetHashCount();
-    //  CPUSolver::hashes = 0;
+    uint32_t const value = CPUSolver::hashes;
+    CPUSolver::hashes = 0;
     info.GetReturnValue().Set(value);
   }
 

@@ -56,35 +56,6 @@ void HybridMiner::setChallengeNumber(std::string const& challengeNumber)
   }
 }
 
-
-uint32_t HybridMiner::getHashCount()
-{
-  if(strcmp(m_hardwareType.c_str(), "cuda") == 0)
-  {
-    uint32_t const value = cudaSolver.getHashCount();
-    return value;
-  }else{
-    uint32_t const value =  CPUSolver::hashes;
-    return value;
-  }
-    return 0;
-}
-
-
-
-void HybridMiner::resetHashCount()
-{
-  if(strcmp(m_hardwareType.c_str(), "cuda") == 0)
-  {
-     cudaSolver.resetHashCount( );
-  }else{
-    CPUSolver::hashes = 0;
-  }
-}
-
-
-
-
 void HybridMiner::setDifficultyTarget(std::string const& difficultyTarget)
 {
   if(strcmp(m_hardwareType.c_str(), "cuda") == 0)

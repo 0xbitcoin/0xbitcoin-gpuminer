@@ -19,11 +19,6 @@ public:
   CUDASolver() noexcept;
 
 public:
-
-  uint32_t getHashCount();
-
-  void resetHashCount();
-
   void setAddress(std::string const& addr);
 
   void setChallenge(std::string const& chal);

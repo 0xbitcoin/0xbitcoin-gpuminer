@@ -29,9 +29,6 @@ public:
 
   void setHardwareType(std::string const& hardwareType);
 
-  uint32_t getHashCount();
-  void resetHashCount();
-
 public:
   void run();
   void stop();
