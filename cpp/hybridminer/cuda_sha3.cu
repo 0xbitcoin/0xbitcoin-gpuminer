@@ -444,12 +444,12 @@ void stop_solving()
 
 
 
-void setBlocksize(int blocksize)
+void setCudaBlocksize(int blocksize)
 {
    gpu_blocksize = blocksize;
 }
 
-void setThreadsize(int threadsize)
+void setCudaThreadsize(int threadsize)
 {
    gpu_threadsize = threadsize;
 }
@@ -560,6 +560,7 @@ unsigned char * find_message(const char * challenge_target, const char * hash_pr
       int now = (int)time(0);
 		  cnt = 0;
 
+				printf("USING NB %d NT %d.\n", number_blocks, number_threads);
 
 		while (!h_done[0]) {
 			gpu_mine<<<number_blocks, number_threads>>>(working_memory_hash, working_memory_nonce, d_challenge_hash, device_solution, d_done, d_hash_prefix,now,cnt);

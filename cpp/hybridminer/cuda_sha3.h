@@ -17,6 +17,8 @@ public:
 public:
 
   void gpu_init();
+  void setCudaBlocksize(int blocksize);
+  void setCudaThreadsize(int threadsize);
   void runBenchmarks();
   char *read_in_messages();
   int gcd(int a, int b);

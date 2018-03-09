@@ -139,11 +139,13 @@ void CUDASolver::setTarget(std::string const& target)
 
 void CUDASolver::setBlocksize(int size)
 {
-   setBlocksize(size);
+   cout << "CUDASolver: setting blocksize: " << size << "\n";
+   setCudaBlocksize(size);
 }
 void CUDASolver::setThreadsize(int size)
 {
-   setThreadsize(size);
+   cout << "CUDASolver: setting threadsize: " << size << "\n";
+   setCudaThreadsize(size);
 }
 
 bool CUDASolver::requiresRestart()
