@@ -1,5 +1,5 @@
 // magic numbers we need to tune
-#define LOOP_IN_GPU_OPTIMIZATION 10000
+#define LOOP_IN_GPU_OPTIMIZATION 1000
 #define HARDCODED_BLOCKSIZE 256
 #define HARDCODED_THREADSIZE 256
 // magic numbers we need to tune
