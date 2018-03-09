@@ -1,14 +1,14 @@
 Arguments: 
-  /home/andy/.nvm/versions/node/v6.12.2/bin/node /home/andy/.nvm/versions/node/v6.12.2/bin/yarn
+  /home/andy/.nvm/versions/node/v8.9.4/bin/node /home/andy/.nvm/versions/node/v8.9.4/bin/yarn
 
 PATH: 
-  /home/andy/.rvm/gems/ruby-2.2.7/bin:/home/andy/.rvm/gems/ruby-2.2.7@global/bin:/home/andy/.rvm/rubies/ruby-2.2.7/bin:/home/andy/.nvm/versions/node/v6.12.2/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/home/andy/.rvm/bin:/home/andy/.rvm/bin:/home/andy/.rvm/bin
+  /home/andy/.nvm/versions/node/v8.9.4/bin:/home/andy/bin:/home/andy/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin
 
 Yarn version: 
   1.5.1
 
 Node version: 
-  6.12.2
+  8.9.4
 
 Platform: 
   linux x64
@@ -16,14 +16,14 @@ Platform:
 npm manifest: 
   {
     "name": "0xbitcoin-miner",
-    "version": "2.0.0",
+    "version": "2.0.26",
     "engines": {
       "node": ">=8.9"
     },
     "description": "Find hashes, get money.",
     "main": "index.js",
     "scripts": {
-      "build": "node-gyp configure build --target=v8.9.4",
+      "build": "node-gyp rebuild --target=v8.9.4",
       "package": "pkg index.js ",
       "test": "./node_modules/mocha/bin/mocha"
     },
@@ -37,7 +37,7 @@ npm manifest:
       "js-sha3": "^0.7.0",
       "leftpad": "^0.0.1",
       "mkdirp": "^0.5.1",
-      "nan": "^2.8.0",
+      "nan": "^2.9.2",
       "node-localstorage": "^1.3.0",
       "prompt": "^1.0.0",
       "web3": "^1.0.0-beta.29",
@@ -1335,9 +1335,13 @@ Lockfile:
       object-assign "^4.0.1"
       thenify-all "^1.0.0"
   
-  nan@^2.0.5, nan@^2.0.8, nan@^2.2.1, nan@^2.3.3, nan@^2.8.0:
+  nan@^2.0.5, nan@^2.0.8, nan@^2.2.1, nan@^2.3.3:
     version "2.8.0"
     resolved "https://registry.yarnpkg.com/nan/-/nan-2.8.0.tgz#ed715f3fe9de02b57a5e6252d90a96675e1f085a"
+  
+  nan@^2.9.2:
+    version "2.9.2"
+    resolved "https://registry.yarnpkg.com/nan/-/nan-2.9.2.tgz#f564d75f5f8f36a6d9456cca7a6c4fe488ab7866"
   
   nano-json-stream-parser@^0.1.2:
     version "0.1.2"
@@ -2454,14 +2458,17 @@ Lockfile:
       fd-slicer "~1.0.1"
 
 Trace: 
-  Error: Found incompatible module
-      at MessageError.Error (native)
-      at new MessageError (/home/andy/.nvm/versions/node/v6.12.2/lib/node_modules/yarn/lib/cli.js:186:110)
-      at Object.checkOne (/home/andy/.nvm/versions/node/v6.12.2/lib/node_modules/yarn/lib/cli.js:62444:11)
-      at /home/andy/.nvm/versions/node/v6.12.2/lib/node_modules/yarn/lib/cli.js:22773:75
-      at next (native)
-      at step (/home/andy/.nvm/versions/node/v6.12.2/lib/node_modules/yarn/lib/cli.js:98:30)
-      at /home/andy/.nvm/versions/node/v6.12.2/lib/node_modules/yarn/lib/cli.js:116:14
-      at Promise.F (/home/andy/.nvm/versions/node/v6.12.2/lib/node_modules/yarn/lib/cli.js:23451:28)
-      at /home/andy/.nvm/versions/node/v6.12.2/lib/node_modules/yarn/lib/cli.js:95:12
-      at /home/andy/.nvm/versions/node/v6.12.2/lib/node_modules/yarn/lib/cli.js:22777:27
+  Error: Command failed.
+  Exit code: 1
+  Command: sh
+  Arguments: -c node-gyp rebuild
+  Directory: /home/andy/dev/0xbitcoin-gpuminer
+  Output:
+  
+      at ProcessTermError.MessageError (/home/andy/.nvm/versions/node/v8.9.4/lib/node_modules/yarn/lib/cli.js:186:110)
+      at new ProcessTermError (/home/andy/.nvm/versions/node/v8.9.4/lib/node_modules/yarn/lib/cli.js:226:113)
+      at ChildProcess.<anonymous> (/home/andy/.nvm/versions/node/v8.9.4/lib/node_modules/yarn/lib/cli.js:30281:17)
+      at emitTwo (events.js:126:13)
+      at ChildProcess.emit (events.js:214:7)
+      at maybeClose (internal/child_process.js:925:16)
+      at Process.ChildProcess._handle.onexit (internal/child_process.js:209:5)

@@ -1276,9 +1276,13 @@ mz@^2.6.0:
     object-assign "^4.0.1"
     thenify-all "^1.0.0"
 
-nan@^2.0.5, nan@^2.0.8, nan@^2.2.1, nan@^2.3.3, nan@^2.8.0:
+nan@^2.0.5, nan@^2.0.8, nan@^2.2.1, nan@^2.3.3:
   version "2.8.0"
   resolved "https://registry.yarnpkg.com/nan/-/nan-2.8.0.tgz#ed715f3fe9de02b57a5e6252d90a96675e1f085a"
+
+nan@^2.9.2:
+  version "2.9.2"
+  resolved "https://registry.yarnpkg.com/nan/-/nan-2.9.2.tgz#f564d75f5f8f36a6d9456cca7a6c4fe488ab7866"
 
 nano-json-stream-parser@^0.1.2:
   version "0.1.2"

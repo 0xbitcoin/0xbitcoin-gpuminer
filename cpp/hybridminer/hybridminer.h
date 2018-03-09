@@ -28,8 +28,8 @@ public:
   void setMinerAddress(std::string const& minerAddress);
 
   /* only used if cuda mining */
-  void HybridMiner::setBlocksize(std::string const& blocksize);
-  void HybridMiner::setThreadsize(std::string const& threadsize);
+  void setBlocksize(std::string const& blocksize);
+  void setThreadsize(std::string const& threadsize);
 
   void setHardwareType(std::string const& hardwareType);
 
