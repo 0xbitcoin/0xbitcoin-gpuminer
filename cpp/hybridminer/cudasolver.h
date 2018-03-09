@@ -25,6 +25,10 @@ public:
 
   void setTarget(std::string const& target);
 
+  void setBlocksize(int  size);
+
+  void setThreadsize(int  size);
+
   void init();
 
 public:

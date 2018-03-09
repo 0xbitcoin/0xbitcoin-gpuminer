@@ -51,6 +51,10 @@ module.exports =  {
       if(subsystem_option == 'cuda')
       {
         CPPMiner.setHardwareType('cuda') ;
+        console.log('setting blocksize to ', this.vault.getBlocksize(), '\n')
+        CPPMiner.setBlocksize(this.vault.getBlocksize());
+        console.log('setting threadsize to ', this.vault.getThreadsize(), '\n')
+        CPPMiner.setThreadsize(this.vault.getThreadsize());
       }else if(subsystem_option == 'opencl'){
         CPPMiner.setHardwareType('opencl');
       }else{
@@ -315,7 +319,7 @@ module.exports =  {
     setHardwareType(type)
     {
       hardwareType = type;
-      console.log('Set hardware type: ', type)
+      console.log('Set hardware type: ', type, '\n')
     },
 
 

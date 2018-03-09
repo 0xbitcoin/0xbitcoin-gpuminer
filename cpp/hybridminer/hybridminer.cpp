@@ -76,6 +76,30 @@ void HybridMiner::setMinerAddress(std::string const& minerAddress)
   }
 }
 
+void HybridMiner::setBlocksize(std::string const& blocksize)
+{
+  if(strcmp(m_hardwareType.c_str(), "cuda") == 0)
+  {
+    cout << "Hybridminer: setting blocksize: " << blocksize << "\n";
+    int i = stoi(blocksize);
+    cudaSolver.setBlocksize(i);
+  }else{
+    /* just ignore if cpu mining? */
+  }
+}
+
+void HybridMiner::setThreadsize(std::string const& threadsize)
+{
+  if(strcmp(m_hardwareType.c_str(), "cuda") == 0)
+  {
+    cout << "Hybridminer: setting threadsize: " << threadsize << "\n";
+    int i = stoi(threadsize);
+    cudaSolver.setThreadsize(i);
+  }else{
+    /* just ignore if cpu mining? */
+  }
+}
+
 // This is a the "main" thread of execution
 void HybridMiner::run()
 {

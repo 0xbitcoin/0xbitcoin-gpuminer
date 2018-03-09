@@ -10,7 +10,7 @@ $(obj).$(TOOLSET)/$(TARGET)/geni/cudasolver.o: $(srcdir)/cpp/hybridminer/cudasol
 	$(call do_cmd,binding_gyp_hybridminer_target_cuda_on_linux_0)
 
 all_deps += $(obj).$(TOOLSET)/$(TARGET)/geni/cudasolver.o
-cmd_binding_gyp_hybridminer_target_cuda_on_linux_0 = LD_LIBRARY_PATH=$(builddir)/lib.host:$(builddir)/lib.target:$$LD_LIBRARY_PATH; export LD_LIBRARY_PATH; cd $(srcdir)/.; mkdir -p $(obj).$(TOOLSET)/hybridminer/geni; nvcc "-std=c++11" -Xcompiler -fpic -c -o "$(obj).$(TOOLSET)/hybridminer/geni/cudasolver.o" "$(abspath $<)"
+cmd_binding_gyp_hybridminer_target_cuda_on_linux_0 = LD_LIBRARY_PATH=$(builddir)/lib.host:$(builddir)/lib.target:$$LD_LIBRARY_PATH; export LD_LIBRARY_PATH; cd $(srcdir)/.; mkdir -p $(obj).$(TOOLSET)/hybridminer/geni; nvcc "-std=c++11" -Xcompiler -fpic -c "$(abspath $<)" -o "$(obj).$(TOOLSET)/hybridminer/geni/cudasolver.o"
 quiet_cmd_binding_gyp_hybridminer_target_cuda_on_linux_0 = RULE binding_gyp_hybridminer_target_cuda_on_linux_0 $@
 
 rule_binding_gyp_hybridminer_target_cuda_on_linux_outputs := \
