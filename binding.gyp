@@ -10,31 +10,27 @@
       "target_name": "hybridminer",
       "sources": [
         "cpp/hybridminer/addon.cc",
-
         "cpp/hybridminer/hybridminer.cpp",
         "cpp/hybridminer/cpusolver.cpp",
-        "cpp/hybridminer/cudasolver.cu",
-        "cpp/hybridminer/sha3.c"
-
+        "cpp/hybridminer/sha3.c",
+        "cpp/hybridminer/cudasolver.cu"
       ],
-      'cflags_cc+': [ '-march=native', '-O3', '-std=c++11' ],
+      'cflags_cc+': [ '-EHsc -W3 -nologo -Ox -FS -Zi -MT -I', 'cpp/hybridminer' ],
       "include_dirs": ["<!(node -e \"require('nan')\")"],
 
 
 
        'rules': [
-
-
-         {
+        {
            'extension': 'cu',
            'inputs': ['<(RULE_INPUT_PATH)'],
-           'outputs':[ '<(INTERMEDIATE_DIR)/<(RULE_INPUT_ROOT).o'],
+           'outputs':['<(INTERMEDIATE_DIR)/<(RULE_INPUT_ROOT).o'],
            'conditions': [
-           [ 'OS=="win"',  
+           [ 'OS=="win"',
               {'rule_name': 'cuda on windows',
                'message': "compile cuda file on windows",
                'process_outputs_as_sources': 0,
-               'action': ['nvcc --std=c++11 -c <(_inputs) -o  <(_outputs)'],
+               'action': ['nvcc --use-local-env --cl-version 2017 --machine 64 -cudart static -arch=sm_61 -gencode=arch=compute_61,code=compute_61 -gencode=arch=compute_52,code=sm_52 -Xcompiler "-EHsc -W3 -nologo -Ox -FS -Zi -MT -I../cpp/hybridminer" -c <(_inputs) -o <(_outputs) -I', 'cpp/hybridminer'],
                }, 
              {'rule_name': 'cuda on linux',
                'message': "compile cuda file on linux",
@@ -65,26 +61,25 @@
                 }
               ],
             ],
+      'cflags_cc+': [ '-EHsc -W3 -nologo -Ox -FS -Zi -MT' ],
             'variables': {
               'cuda_root%': '$(CUDA_PATH)'
             },
 
             'libraries': [
-              '-lcuda',
-              '-lcudart',
-              '<(module_root_dir)/build/Release/obj/hybridminer/cudasolver.o'
+              'cuda.lib',
+              'cudart.lib',
+			  'cudasolver.o'
             ],
 
             'library_dirs': [
               '<(cuda_root)/lib/<(arch)',
-              '/usr/local/lib',
-              '/usr/local/cuda/lib64'
+			  '<(module_root_dir)/build/Release/obj/hybridminer'
             ],
 
             "include_dirs": [
               "<(cuda_root)/include",
-              "/usr/local/cuda/include",
-              "/usr/local/include"
+			  'cpp/hybridminer'
             ]
           }]
         ]
