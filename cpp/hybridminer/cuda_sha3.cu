@@ -44,10 +44,6 @@ int gcd( int a, int b );
 
 // updated message the gpu_init() function
 int clock_speed;
-int number_multi_processors;
-int number_blocks;
-int number_threads;
-int max_threads_per_mp;
 int compute_version;
 int h_done[1] = { 0 };
 
@@ -445,16 +441,18 @@ __host__ void gpu_init()
     exit( EXIT_FAILURE );
   }
 
-  number_threads = device_prop.maxThreadsPerBlock;
-  number_multi_processors = device_prop.multiProcessorCount;
-  max_threads_per_mp = device_prop.maxThreadsPerMultiProcessor;
   compute_version = device_prop.major * 100 + device_prop.minor * 10;
 
   clock_speed = (int)( device_prop.memoryClockRate * 1000 * 1000 );    // convert from GHz to hertz
 
   h_message = (unsigned char*)malloc( 84 );
 
-  cnt = 0;
+  cudaMalloc( (void**)&d_done, sizeof( int ) );
+  cudaMalloc( (void**)&d_solution, 84 ); // solution
+  cudaMalloc( (void**)&d_challenge_hash, 32 );
+  cudaMalloc( (void**)&d_hash_prefix, 52 );
+
+  //cnt = 0;
 }
 
 __host__ int gcd( int a, int b )
@@ -480,7 +478,7 @@ __host__ void update_mining_inputs( const char * challenge_target, const char * 
   cudaMalloc( (void**)&d_hash_prefix, 52 );
 
   cudaMemcpy( d_done, h_done, sizeof( int ), cudaMemcpyHostToDevice );
-
+  cudaMemset( d_solution, 0xff, 84 );
   cudaMemcpy( d_challenge_hash, challenge_target, 32, cudaMemcpyHostToDevice );
   cudaMemcpy( d_hash_prefix, hash_prefix, 52, cudaMemcpyHostToDevice );
 }
@@ -489,16 +487,12 @@ __host__ bool find_message( const char * challenge_target, const char * hash_pre
 {
   h_done[0] = 0;
 
-  cudaMalloc( (void**)&d_done, sizeof( int ) );
-  cudaMalloc( (void**)&d_solution, 84 ); // solution
-  cudaMalloc( (void**)&d_challenge_hash, 32 );
-  cudaMalloc( (void**)&d_hash_prefix, 52 );
-
   cudaMemcpy( d_done, h_done, sizeof( int ), cudaMemcpyHostToDevice );
+  cudaMemset( d_solution, 0xff, 84 );
   cudaMemcpy( d_challenge_hash, challenge_target, 32, cudaMemcpyHostToDevice );
   cudaMemcpy( d_hash_prefix, hash_prefix, 52, cudaMemcpyHostToDevice );
 
-  cudaThreadSetLimit( cudaLimitMallocHeapSize, 2 * ( 84 * number_blocks*number_threads + 32 * number_blocks*number_threads ) );
+  //cudaThreadSetLimit( cudaLimitMallocHeapSize, 2 * ( 84 * number_blocks*number_threads + 32 * number_blocks*number_threads ) );
 
   int now = (int)time( 0 );
   uint32_t threads = 1UL << INTENSITY;
@@ -517,7 +511,7 @@ __host__ bool find_message( const char * challenge_target, const char * hash_pre
   }
   const dim3 block( tpb );
 
-  gpu_mine << < grid, block >> > ( d_challenge_hash, d_solution, d_done, d_hash_prefix, now, cnt, threads );
+  gpu_mine <<< grid, block >>> ( d_challenge_hash, d_solution, d_done, d_hash_prefix, now, cnt, threads );
   cudaError_t cudaerr = cudaDeviceSynchronize();
   if( cudaerr != cudaSuccess )
   {
@@ -531,7 +525,7 @@ __host__ bool find_message( const char * challenge_target, const char * hash_pre
   cudaMemcpy( h_done, d_done, sizeof( int ), cudaMemcpyDeviceToHost );
   cudaMemcpy( h_message, d_solution, 84, cudaMemcpyDeviceToHost );
 
-  fprintf( stderr, "Total hashes: %llu\n", cnt );
+  //fprintf( stderr, "Total hashes: %llu\n", cnt );
   return ( h_done[0] == 1 );
 }
 
@@ -543,4 +537,5 @@ __host__ void gpu_cleanup()
   cudaFree( d_solution );
   cudaFree( d_challenge_hash );
   cudaFree( d_hash_prefix );
+  free( h_message );
 }

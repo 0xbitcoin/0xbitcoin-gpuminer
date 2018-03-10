@@ -125,7 +125,6 @@ void CUDASolver::setTarget( std::string const& target )
   updateGPULoop();
 }
 
-
 bool CUDASolver::requiresRestart()
 {
   return m_updated_gpu_inputs;
@@ -141,17 +140,16 @@ void CUDASolver::updateGPULoop()
   {
     m_updated_gpu_inputs = false;
 
-    printf( "Target input:\n" );
+    //printf( "Target input:\n" );
 
     if( s_target.length() < 66 )
     {
       std::string zeros = std::string( 66 - s_target.length(), '0' );
       std::string s = "0x" + zeros + s_target.substr( 2, s_target.length() );
       s_target = s;
-
     }
 
-    unsigned char  target_input[64];
+    unsigned char target_input[64];
     bytes_t target_bytes( 32 );
 
     hexToBytes( s_target, target_bytes );
@@ -159,10 +157,10 @@ void CUDASolver::updateGPULoop()
     for( int i = 0; i < 32; i++ )
     {
       target_input[i] = (unsigned char)target_bytes[i];
-      printf( "%02x", (unsigned char)target_input[i] );
+      //printf( "%02x", (unsigned char)target_input[i] );
     }
 
-    unsigned   char  hash_prefix[52];
+    unsigned char hash_prefix[52];
     std::string clean_challenge = s_challenge;
     bytes_t challenge_bytes( 32 );
 
@@ -177,17 +175,17 @@ void CUDASolver::updateGPULoop()
       hash_prefix[i + 32] = (unsigned char)m_address[i];
     }
 
-    printf( "Challenge+Address:\n" );
-    for( int i = 0; i < 52; i++ )
-    {
-      printf( "%02x", (unsigned char)hash_prefix[i] );
-    }
-    printf( "\n/prefix\n" );
+    //printf( "Challenge+Address:\n" );
+    //for( int i = 0; i < 52; i++ )
+    //{
+    //  printf( "%02x", (unsigned char)hash_prefix[i] );
+    //}
+    //printf( "\n/prefix\n" );
 
-    printf( "Updating mining inputs\n" );
+    //printf( "Updating mining inputs\n" );
     update_mining_inputs( (const char *)target_input, (const char *)hash_prefix );
+    stop_solving();
   }
-
 }
 
 // Buffer order: 1-challenge 2-ethAddress 3-solution
@@ -213,7 +211,7 @@ void CUDASolver::init()
 
 void CUDASolver::stopFinding()
 {
-  std::cout << "CUDA has stopped hashing for now." << std::endl;
+  //std::cout << "CUDA has stopped hashing for now." << std::endl;
 
   //set h_done[0] = 1
   stop_solving();
@@ -223,13 +221,13 @@ CUDASolver::bytes_t CUDASolver::findSolution()
 {
   m_updated_gpu_inputs = false;
 
-  std::cout << "CUDA is trying to find a solution :)" << std::endl;
+  //std::cout << "CUDA is trying to find a solution :)" << std::endl;
 
   // What are these even here for?
   //cudaEventCreate( &start );
   //cudaEventCreate( &stop );
 
-  printf( "Target input:\n" );
+  //printf( "Target input:\n" );
 
   if( s_target.length() < 66 )
   {
@@ -246,7 +244,7 @@ CUDASolver::bytes_t CUDASolver::findSolution()
   for( int i = 0; i < 32; i++ )
   {
     target_input[i] = (unsigned char)target_bytes[i];
-    printf( "%02x", (unsigned char)target_input[i] );
+    //printf( "%02x", (unsigned char)target_input[i] );
   }
 
   unsigned   char  hash_prefix[52];
@@ -264,12 +262,12 @@ CUDASolver::bytes_t CUDASolver::findSolution()
     hash_prefix[i + 32] = (unsigned char)m_address[i];
   }
 
-  printf( "\nChallenge+Address:\n" );
-  for( int i = 0; i < 52; i++ )
-  {
-    printf( "%02x", (unsigned char)hash_prefix[i] );
-  }
-  printf( "\n/prefix\n" );
+  //printf( "\nChallenge+Address:\n" );
+  //for( int i = 0; i < 52; i++ )
+  //{
+  //  printf( "%02x", (unsigned char)hash_prefix[i] );
+  //}
+  ////printf( "\n/prefix\n" );
 
   CUDASolver::bytes_t byte_solution( 32 );
   h_done[0] = 0;
