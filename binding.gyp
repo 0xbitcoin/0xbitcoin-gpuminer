@@ -14,8 +14,15 @@
         "cpp/hybridminer/sha3.c",
         "cpp/hybridminer/cudasolver.cu"
       ],
-      'cflags_cc+': [ '-EHsc', '-W3', '-nologo', '-Ox', '-FS',
+      'conditions': [
+		  [ 'OS=="win"',
+			{'cflags_cc+': [ '-EHsc', '-W3', '-nologo', '-Ox', '-FS',
                       '-Zi', '-MT', '-I', 'cpp/hybridminer' ],
+			},
+			{'cflags_cc+': [ '-march=native', '-O3', '-std=c++11' ],
+			}
+		  ]
+	  ],
       "include_dirs": ["<!(node -e \"require('nan')\")"],
 
       'rules': [
