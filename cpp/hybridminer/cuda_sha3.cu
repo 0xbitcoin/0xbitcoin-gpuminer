@@ -1,7 +1,5 @@
 // magic numbers we need to tune
-#define LOOP_IN_GPU_OPTIMIZATION 10000
-#define HARDCODED_BLOCKSIZE 256
-#define HARDCODED_THREADSIZE 256
+#define INTENSITY 26
 // magic numbers we need to tune
 
 #include <time.h>
@@ -27,6 +25,18 @@ based off of https://github.com/Dunhili/SHA3-gpu-brute-force-cracker/blob/master
 #include <stdio.h>
 #include <stdint.h>
 
+#ifdef __INTELLISENSE__
+ /* reduce vstudio warnings (__byteperm, blockIdx...) */
+#include <device_functions.h>
+#include <device_launch_parameters.h>
+#define __launch_bounds__(max_tpb, min_blocks)
+#endif
+
+#define TPB52 1024
+#define TPB50 384
+#define NPT 2
+#define NBN 2
+
 void gpu_init();
 //void runBenchmarks();
 //char *read_in_messages();
@@ -38,21 +48,27 @@ int number_multi_processors;
 int number_blocks;
 int number_threads;
 int max_threads_per_mp;
+int compute_version;
 int h_done[1] = { 0 };
 
-unsigned long long cnt = 0;
+unsigned long long cnt;
 
 int num_messages;
 const int digest_size = 256;
 const int digest_size_bytes = digest_size / 8;
 const size_t str_length = 7;	//change for different sizes
 
-cudaEvent_t start, stop;
+unsigned char * h_message;
+
+//cudaEvent_t start, stop;
+
+int* d_done;
+char* d_solution;
+
+unsigned char* d_challenge_hash;
+unsigned char* d_hash_prefix;
 
 #define ROTL64(x, y) (((x) << (y)) | ((x) >> (64 - (y))))
-
-__device__ const char *chars =
-" !\"#$%&\'()*+'-./0123456789:;<=>?@ABCDEFGHIJKLMOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~";
 
 __device__ const uint64_t RC[24] = {
     0x0000000000000001, 0x0000000000008082, 0x800000000000808a,
@@ -85,16 +101,34 @@ __device__ int compare_hash( unsigned char *target, unsigned char *hash, int len
   return (unsigned char)( hash[i] ) < (unsigned char)( target[i] );
 }
 
-__device__ void keccak256( uint64_t state[25] )
+__device__ void keccak( const unsigned char *message, int message_len, unsigned char *output, int output_len )
 {
+  uint64_t state[25];
+  uint8_t temp_message[144];
+  const int rsize = 136;
+  const int rsize_byte = 17;
+
+  memset( state, 0, sizeof( state ) );
+
+  // last block and padding
+  memcpy( temp_message, message, message_len );
+  temp_message[message_len++] = 1;
+  memset( temp_message + message_len, 0, rsize - message_len );
+  temp_message[rsize - 1] |= 0x80;
+
+  for( int i = 0; i < rsize_byte; i++ )
+  {
+    state[i] ^= ( (uint64_t *)temp_message )[i];
+  }
+
   uint64_t temp, C[5];
   int j;
 
   for( int i = 0; i < 24; i++ )
   {
     // Theta
-// for i = 0 to 5
-//    C[i] = state[i] ^ state[i + 5] ^ state[i + 10] ^ state[i + 15] ^ state[i + 20];
+    // for i = 0 to 5
+    //    C[i] = state[i] ^ state[i + 5] ^ state[i + 10] ^ state[i + 15] ^ state[i + 20];
     C[0] = state[0] ^ state[5] ^ state[10] ^ state[15] ^ state[20];
     C[1] = state[1] ^ state[6] ^ state[11] ^ state[16] ^ state[21];
     C[2] = state[2] ^ state[7] ^ state[12] ^ state[17] ^ state[22];
@@ -141,11 +175,11 @@ __device__ void keccak256( uint64_t state[25] )
     state[24] ^= temp;
 
     // Rho Pi
-// for i = 0 to 24
-//     j = piln[i];
-//     C[0] = state[j];
-//     state[j] = ROTL64(temp, r[i]);
-//     temp = C[0];
+    // for i = 0 to 24
+    //     j = piln[i];
+    //     C[0] = state[j];
+    //     state[j] = ROTL64(temp, r[i]);
+    //     temp = C[0];
     temp = state[1];
     j = piln[0];
     C[0] = state[j];
@@ -268,11 +302,11 @@ __device__ void keccak256( uint64_t state[25] )
     temp = C[0];
 
     //  Chi
-// for j = 0 to 25, j += 5
-//     for i = 0 to 5
-//         C[i] = state[j + i];
-//     for i = 0 to 5
-//         state[j + 1] ^= (~C[(i + 1) % 5]) & C[(i + 2) % 5];
+    // for j = 0 to 25, j += 5
+    //     for i = 0 to 5
+    //         C[i] = state[j + i];
+    //     for i = 0 to 5
+    //         state[j + 1] ^= (~C[(i + 1) % 5]) & C[(i + 2) % 5];
     C[0] = state[0];
     C[1] = state[1];
     C[2] = state[2];
@@ -336,75 +370,53 @@ __device__ void keccak256( uint64_t state[25] )
     //  Iota
     state[0] ^= RC[i];
   }
-}
-
-__device__ void keccak( const char *message, int message_len, unsigned char *output, int output_len )
-{
-  uint64_t state[25];
-  uint8_t temp[144];
-  int rsize = 136;
-  int rsize_byte = 17;
-
-  memset( state, 0, sizeof( state ) );
-
-  for( ; message_len >= rsize; message_len -= rsize, message += rsize )
-  {
-    for( int i = 0; i < rsize_byte; i++ )
-    {
-      state[i] ^= ( (uint64_t *)message )[i];
-    }
-    keccak256( state );
-  }
-
-  // last block and padding
-  memcpy( temp, message, message_len );
-  temp[message_len++] = 1;
-  memset( temp + message_len, 0, rsize - message_len );
-  temp[rsize - 1] |= 0x80;
-
-  for( int i = 0; i < rsize_byte; i++ )
-  {
-    state[i] ^= ( (uint64_t *)temp )[i];
-  }
-
-  keccak256( state );
   memcpy( output, state, output_len );
 }
 
 // hash length is 256 bits
-__global__ void gpu_mine( char * working_memory_hash, char * working_memory_nonce, unsigned char *challenge_hash, char * device_solution, int *done, const unsigned char * hash_prefix, int now, int cnt )
+#if __CUDA_ARCH__ > 500
+__global__ __launch_bounds__( TPB52, 1 )
+#else
+__global__ __launch_bounds__( TPB50, 2 )
+#endif
+void gpu_mine( unsigned char *challenge_hash, char * device_solution, int *d_done, const unsigned char * hash_prefix, int now, unsigned long long cnt, unsigned int threads )
 {
-  int tid = threadIdx.x + ( blockIdx.x * blockDim.x );
-  char * message = &working_memory_nonce[84 * tid];
-  char * hash = &working_memory_hash[32 * ( tid )];
+  uint32_t thread = blockDim.x * blockIdx.x + threadIdx.x;
+  unsigned char message[84];
+  //char * hash = &working_memory_hash[32 * ( tid )];
+
+  memset( message, 0xf, 84 );
 
   int str_len = 84;
 
-  curandState_t state;
-  /* we have to initialize the state */
-  curand_init( now, tid, cnt, &state );
   int len = 0;
   for( len = 0; len < 52; len++ )
   {
     message[len] = hash_prefix[len];
   }
-  for( int i = 0; i < LOOP_IN_GPU_OPTIMIZATION; i++ )
+
+  //uint2 s[25], t[5], v, w, u[5];
+#if __CUDA_ARCH__ > 500
+  uint64_t step = gridDim.x * blockDim.x;
+  uint64_t maxNonce = cnt + threads;
+  for( uint64_t nounce = cnt + thread; nounce < maxNonce; nounce += step )
   {
-    for( len = 0; len < 32; len++ )
-    {
-      char r = (char)curand( &state ) % 256;
-      message[52 + len] = r;
-    }
+#else
+  uint32_t nounce = cnt + thread;
+  if( thread < threads )
+  {
+#endif
+    (uint64_t&)message[52] = nounce;
 
     const int output_len = 32;
     unsigned char output[output_len];
-    keccak( &message[0], str_len, &output[0], output_len );
+    keccak( message, str_len, output, output_len );
 
     if( compare_hash( &challenge_hash[0], &output[0], output_len ) )
     {
-      if( done[0] != 1 )
+      if( d_done[0] != 1 )
       {
-        done[0] = 1;
+        d_done[0] = 1;
         memcpy( device_solution, message, str_len );
       }
       return;
@@ -412,9 +424,7 @@ __global__ void gpu_mine( char * working_memory_hash, char * working_memory_nonc
   }
 }
 
-
-
-void stop_solving()
+__host__ void stop_solving()
 {
   h_done[0] = 1;
 }
@@ -422,10 +432,10 @@ void stop_solving()
 /**
  * Initializes the global variables by calling the cudaGetDeviceProperties().
  */
-void gpu_init()
+__host__ void gpu_init()
 {
   cudaDeviceProp device_prop;
-  int device_count, block_size;
+  int device_count;
 
   cudaGetDeviceCount( &device_count );
 
@@ -438,39 +448,33 @@ void gpu_init()
   number_threads = device_prop.maxThreadsPerBlock;
   number_multi_processors = device_prop.multiProcessorCount;
   max_threads_per_mp = device_prop.maxThreadsPerMultiProcessor;
-
-  number_threads = HARDCODED_THREADSIZE;
-  number_blocks = HARDCODED_BLOCKSIZE;
+  compute_version = device_prop.major * 100 + device_prop.minor * 10;
 
   clock_speed = (int)( device_prop.memoryClockRate * 1000 * 1000 );    // convert from GHz to hertz
+
+  h_message = (unsigned char*)malloc( 84 );
+
+  cnt = 0;
 }
 
-int gcd( int a, int b )
+__host__ int gcd( int a, int b )
 {
   return ( a == 0 ) ? b : gcd( b % a, a );
 }
 
-int getHashCount()
+__host__ unsigned long long getHashCount()
 {
   return cnt;
 }
-void resetHashCount()
+__host__ void resetHashCount()
 {
   cnt = 0;
 }
 
-void update_mining_inputs( const char * challenge_target, const char * hash_prefix ) // can accept challenge
+__host__ void update_mining_inputs( const char * challenge_target, const char * hash_prefix ) // can accept challenge
 {
-
-  int *d_done;
-  unsigned char *d_hash;
-  char *device_solution;
-
-  unsigned char * d_challenge_hash;
-  unsigned char * d_hash_prefix;
-
   cudaMalloc( (void**)&d_done, sizeof( int ) );
-  cudaMalloc( (void**)&device_solution, 84 ); // solution
+  cudaMalloc( (void**)&d_solution, 84 ); // solution
   cudaMalloc( (void**)&d_challenge_hash, 32 );
 
   cudaMalloc( (void**)&d_hash_prefix, 52 );
@@ -481,18 +485,12 @@ void update_mining_inputs( const char * challenge_target, const char * hash_pref
   cudaMemcpy( d_hash_prefix, hash_prefix, 52, cudaMemcpyHostToDevice );
 }
 
-unsigned char * find_message( const char * challenge_target, const char * hash_prefix ) // can accept challenge
+__host__ bool find_message( const char * challenge_target, const char * hash_prefix ) // can accept challenge
 {
   h_done[0] = 0;
 
-  int *d_done;
-  char *device_solution;
-
-  unsigned char * d_challenge_hash;
-  unsigned char * d_hash_prefix;
-
   cudaMalloc( (void**)&d_done, sizeof( int ) );
-  cudaMalloc( (void**)&device_solution, 84 ); // solution
+  cudaMalloc( (void**)&d_solution, 84 ); // solution
   cudaMalloc( (void**)&d_challenge_hash, 32 );
   cudaMalloc( (void**)&d_hash_prefix, 52 );
 
@@ -502,55 +500,47 @@ unsigned char * find_message( const char * challenge_target, const char * hash_p
 
   cudaThreadSetLimit( cudaLimitMallocHeapSize, 2 * ( 84 * number_blocks*number_threads + 32 * number_blocks*number_threads ) );
 
-  unsigned int workers = number_blocks * number_threads;
-  char * working_memory_hash;
-  cudaMallocManaged( &working_memory_hash, workers * 32 );
-  char * working_memory_nonce;
-  cudaMallocManaged( &working_memory_nonce, workers * 84 );
-
   int now = (int)time( 0 );
-  cnt = 0;
+  uint32_t threads = 1UL << INTENSITY;
 
-  while( !h_done[0] )
+  uint32_t tpb;
+  dim3 grid;
+  if( compute_version > 500 )
   {
-    gpu_mine <<< number_blocks, number_threads >>> ( working_memory_hash, working_memory_nonce, d_challenge_hash, device_solution, d_done, d_hash_prefix, now, cnt );
-    cudaError_t cudaerr = cudaDeviceSynchronize();
-    if( cudaerr != cudaSuccess )
-    {
-      h_done[0] = 1;
-
-      printf( "kernel launch failed with error %d: %s.\n", cudaerr, cudaGetErrorString( cudaerr ) );
-      exit( EXIT_FAILURE );
-    }
-    cnt += number_threads * number_blocks*LOOP_IN_GPU_OPTIMIZATION;
-
-    fprintf( stderr, "Total Hashes: %u\n", cnt );
-
-    cudaMemcpy( h_done, d_done, sizeof( int ), cudaMemcpyDeviceToHost );
+    tpb = TPB52;
+    grid.x = ( threads + ( NPT*tpb ) - 1 ) / ( NPT*tpb );
   }
+  else
+  {
+    tpb = TPB50;
+    grid.x = ( threads + tpb - 1 ) / tpb;
+  }
+  const dim3 block( tpb );
 
-  unsigned	 char * h_message = (unsigned char*)malloc( 84 );
-  cudaMemcpy( h_message, device_solution, 84, cudaMemcpyDeviceToHost );
-  FILE * fp;
-  fp = fopen( "out.binary", "wb" );
-  fwrite( h_message, 84, 1, fp );
-  fclose( fp );
-  fprintf( stderr, "Total hashes: %u\n", cnt );
+  gpu_mine << < grid, block >> > ( d_challenge_hash, d_solution, d_done, d_hash_prefix, now, cnt, threads );
+  cudaError_t cudaerr = cudaDeviceSynchronize();
+  if( cudaerr != cudaSuccess )
+  {
+    h_done[0] = 1;
 
-  /*
-   printf("MIKERS ANSWER IS : ");
-    for (int j = 52; j < 84; j++)
-    {
-          printf("%02x",(unsigned char) h_message[j]);
-    }
-    printf("\n");
-*/
+    printf( "kernel launch failed with error %d: %s.\n", cudaerr, cudaGetErrorString( cudaerr ) );
+    exit( EXIT_FAILURE );
+  }
+  cnt += threads;
+
+  cudaMemcpy( h_done, d_done, sizeof( int ), cudaMemcpyDeviceToHost );
+  cudaMemcpy( h_message, d_solution, 84, cudaMemcpyDeviceToHost );
+
+  fprintf( stderr, "Total hashes: %llu\n", cnt );
+  return ( h_done[0] == 1 );
+}
+
+__host__ void gpu_cleanup()
+{
+  cudaThreadSynchronize();
 
   cudaFree( d_done );
-  cudaFree( device_solution );
+  cudaFree( d_solution );
   cudaFree( d_challenge_hash );
   cudaFree( d_hash_prefix );
-  cudaFree( working_memory_hash );
-  cudaFree( working_memory_nonce );
-  return h_message;
 }

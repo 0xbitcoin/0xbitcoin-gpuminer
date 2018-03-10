@@ -10,6 +10,9 @@
 //we will need this!
 #include "cuda_sha3.cu"
 
+extern int h_done[1];
+extern unsigned char* h_message;
+
 static const char* const ascii[] = {
   "00","01","02","03","04","05","06","07","08","09","0a","0b","0c","0d","0e","0f",
   "10","11","12","13","14","15","16","17","18","19","1a","1b","1c","1d","1e","1f",
@@ -222,8 +225,9 @@ CUDASolver::bytes_t CUDASolver::findSolution()
 
   std::cout << "CUDA is trying to find a solution :)" << std::endl;
 
-  cudaEventCreate( &start );
-  cudaEventCreate( &stop );
+  // What are these even here for?
+  //cudaEventCreate( &start );
+  //cudaEventCreate( &stop );
 
   printf( "Target input:\n" );
 
@@ -260,25 +264,34 @@ CUDASolver::bytes_t CUDASolver::findSolution()
     hash_prefix[i + 32] = (unsigned char)m_address[i];
   }
 
-  printf( "Challenge+Address:\n" );
+  printf( "\nChallenge+Address:\n" );
   for( int i = 0; i < 52; i++ )
   {
     printf( "%02x", (unsigned char)hash_prefix[i] );
   }
   printf( "\n/prefix\n" );
 
-  unsigned char * s_solution = find_message( (const char *)target_input, (const char *)hash_prefix );
-
-  //here
   CUDASolver::bytes_t byte_solution( 32 );
-  for( int i = 52; i < 84; i++ )
-  {
-    byte_solution[i - 52] = (uint8_t)s_solution[i];
+  h_done[0] = 0;
 
-    //cout << (uint8_t)s_solution[i] << "\n";
-  }
-  cudaEventDestroy( start );
-  cudaEventDestroy( stop );
+  do
+  {
+    if( !find_message( (const char *)target_input, (const char *)hash_prefix ) )
+      continue;
+
+    //here
+    for( int i = 52; i < 84; i++ )
+    {
+      byte_solution[i - 52] = (uint8_t)h_message[i];
+
+      //cout << (uint8_t)s_solution[i] << "\n";
+    }
+  } while( !h_done[0] );
+  gpu_cleanup();
+
+  // What are these even here for?
+  //cudaEventDestroy( start );
+  //cudaEventDestroy( stop );
 
   return byte_solution;
 }

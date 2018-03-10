@@ -10,16 +10,11 @@
 class CUDASha3
 {
 public:
-
-public:
   CUDASha3() noexcept;
-
-public:
-
   void gpu_init();
   void runBenchmarks();
   char *read_in_messages();
-  int gcd(int a, int b);
+  int gcd( int a, int b );
 
 private:
   // updated message the gpu_init() function
@@ -35,7 +30,6 @@ private:
   const size_t str_length = 7;	//change for different sizes
 
   cudaEvent_t start, stop;
-
 };
 
 #endif // !_SOLVER_H_
