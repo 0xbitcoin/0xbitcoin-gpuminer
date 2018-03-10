@@ -49,6 +49,7 @@ int h_done[1] = { 0 };
 clock_t start;
 
 unsigned long long cnt;
+unsigned long long printable_hashrate_cnt;
 
 int num_messages;
 const int digest_size = 256;
@@ -454,7 +455,8 @@ __host__ void gpu_init()
   cudaMalloc( (void**)&d_challenge_hash, 32 );
   cudaMalloc( (void**)&d_hash_prefix, 52 );
 
-  cnt = 0;
+  //cnt = 0;
+  printable_hashrate_cnt = 0;
 }
 
 __host__ int gcd( int a, int b )
@@ -469,6 +471,7 @@ __host__ unsigned long long getHashCount()
 __host__ void resetHashCount()
 {
   cnt = 0;
+  printable_hashrate_cnt = 0;
 }
 
 __host__ void update_mining_inputs( const char * challenge_target, const char * hash_prefix ) // can accept challenge
@@ -523,14 +526,15 @@ __host__ bool find_message( const char * challenge_target, const char * hash_pre
     exit( EXIT_FAILURE );
   }
   cnt += threads;
+  printable_hashrate_cnt += threads;
 
   cudaMemcpy( h_done, d_done, sizeof( int ), cudaMemcpyDeviceToHost );
   cudaMemcpy( h_message, d_solution, 84, cudaMemcpyDeviceToHost );
 
   clock_t t = clock() - start;
 
-  fprintf( stderr, "Hash Rate: %i MH/Second\t", int(float(cnt)/(((float)t)/CLOCKS_PER_SEC )/1000000));
-  fprintf( stderr, "Total hashes: %llu\n", cnt );
+  fprintf( stderr, "Hash Rate: %i MH/Second\t", int(float(printable_hashrate_cnt)/(((float)t)/CLOCKS_PER_SEC )/1000000));
+  fprintf( stderr, "Total hashes: %llu\n", printable_hashrate_cnt );
   return ( h_done[0] == 1 );
 }
 
