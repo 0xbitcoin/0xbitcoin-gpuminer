@@ -1,6 +1,8 @@
 // magic numbers we need to tune
 #define INTENSITY 26
 // magic numbers we need to tune
+#include <process.h>
+
 
 #include <time.h>
 #include <curand.h>
@@ -456,6 +458,8 @@ __host__ void gpu_init()
   cudaDeviceProp device_prop;
   int device_count;
   start = clock();
+  srand((time(NULL) & 0xFFFF) | (getpid() << 16));
+
 
   cudaGetDeviceCount( &device_count );
 
