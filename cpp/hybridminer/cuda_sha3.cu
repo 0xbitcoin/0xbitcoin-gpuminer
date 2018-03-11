@@ -119,7 +119,7 @@ __device__ void keccak( const unsigned char *message, int message_len, unsigned 
     state[i] ^= ( (uint64_t *)temp_message )[i];
   }
 
-  uint64_t temp, C[5];
+  uint64_t temp, C[5], D[5];
   int j;
 
   for( int i = 0; i < 24; i++ )
@@ -127,16 +127,24 @@ __device__ void keccak( const unsigned char *message, int message_len, unsigned 
     // Theta
     // for i = 0 to 5
     //    C[i] = state[i] ^ state[i + 5] ^ state[i + 10] ^ state[i + 15] ^ state[i + 20];
+    /*
     C[0] = state[0] ^ state[5] ^ state[10] ^ state[15] ^ state[20];
     C[1] = state[1] ^ state[6] ^ state[11] ^ state[16] ^ state[21];
     C[2] = state[2] ^ state[7] ^ state[12] ^ state[17] ^ state[22];
     C[3] = state[3] ^ state[8] ^ state[13] ^ state[18] ^ state[23];
     C[4] = state[4] ^ state[9] ^ state[14] ^ state[19] ^ state[24];
+    */
+    unsigned int x;
+    for (x = 0; x < 5; x++) {
+      C[x] = state[x] ^ state[x + 5] ^ state[x + 10] ^ state[x + 15] ^ state[x + 20];
+    }
+
 
     // for i = 0 to 5
     //     temp = C[(i + 4) % 5] ^ ROTL64(C[(i + 1) % 5], 1);
     //     for j = 0 to 25, j += 5
     //          state[j + i] ^= temp;
+    /*
     temp = C[4] ^ ROTL64( C[1], 1 );
     state[0] ^= temp;
     state[5] ^= temp;
@@ -171,6 +179,21 @@ __device__ void keccak( const unsigned char *message, int message_len, unsigned 
     state[14] ^= temp;
     state[19] ^= temp;
     state[24] ^= temp;
+    */
+    D[0] = ROTL64(C[1], 1) ^ C[4];
+    D[1] = ROTL64(C[2], 1) ^ C[0];
+    D[2] = ROTL64(C[3], 1) ^ C[1];
+    D[3] = ROTL64(C[4], 1) ^ C[2];
+    D[4] = ROTL64(C[0], 1) ^ C[3];
+
+    for (x = 0; x < 5; x++) {
+      state[x]      ^= D[x];
+      state[x + 5]  ^= D[x];
+      state[x + 10] ^= D[x];
+      state[x + 15] ^= D[x];
+      state[x + 20] ^= D[x];
+    }
+
 
     // Rho Pi
     // for i = 0 to 24
@@ -377,13 +400,11 @@ __global__ __launch_bounds__( TPB52, 1 )
 #else
 __global__ __launch_bounds__( TPB50, 2 )
 #endif
-void gpu_mine( unsigned char *challenge_hash, char * device_solution, int *d_done, const unsigned char * hash_prefix, int now, unsigned long long cnt, unsigned int threads )
+void gpu_mine( unsigned char * init_message, unsigned char *challenge_hash, char * device_solution, int *d_done, const unsigned char * hash_prefix, int now, unsigned long long cnt, unsigned int threads )
 {
   uint32_t thread = blockDim.x * blockIdx.x + threadIdx.x;
   unsigned char message[84];
-  //char * hash = &working_memory_hash[32 * ( tid )];
-
-  memset( message, 0xf, 84 );
+  memcpy(message, init_message, 84);
 
   int str_len = 84;
 
@@ -516,7 +537,16 @@ __host__ bool find_message( const char * challenge_target, const char * hash_pre
   }
   const dim3 block( tpb );
 
-  gpu_mine <<< grid, block >>> ( d_challenge_hash, d_solution, d_done, d_hash_prefix, now, cnt, threads );
+  unsigned char init_message[84];
+  unsigned char * device_init_message;
+
+  for(int i_rand = 0; i_rand < 84; i_rand++){
+    init_message[i_rand] = (unsigned char ) rand()%256;
+  }
+  cudaMalloc( (void**)&device_init_message, 84 );
+  cudaMemcpy( device_init_message, init_message, 84, cudaMemcpyHostToDevice );
+
+  gpu_mine <<< grid, block >>> (device_init_message, d_challenge_hash, d_solution, d_done, d_hash_prefix, now, cnt, threads );
   cudaError_t cudaerr = cudaDeviceSynchronize();
   if( cudaerr != cudaSuccess )
   {
