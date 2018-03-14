@@ -352,6 +352,8 @@ __global__ __launch_bounds__( TPB50, 2 )
 #endif
 void gpu_mine( unsigned char * init_message, unsigned char *challenge_hash, char * device_solution, int *d_done, const unsigned char * hash_prefix, int now, unsigned long long cnt, unsigned int threads )
 {
+  const int output_len = 32;
+  unsigned char output[output_len];
   uint32_t thread = blockDim.x * blockIdx.x + threadIdx.x;
   unsigned char message[144];
   int str_len = 84;
@@ -376,8 +378,6 @@ void gpu_mine( unsigned char * init_message, unsigned char *challenge_hash, char
 #endif
     (uint64_t&)message[52] = nounce;
 
-    const int output_len = 32;
-    unsigned char output[output_len];
     keccak( message, str_len, output, output_len );
 
     int i = 0;
