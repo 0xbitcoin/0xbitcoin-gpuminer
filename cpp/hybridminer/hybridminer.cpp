@@ -96,7 +96,7 @@ void HybridMiner::run()
     cudaSolver.init();
 
     solutionBytes = cudaSolver.findSolution();
-    std::cout << "--GPU returned a soln ! -- " << std::endl;
+    std::cout << "--GPU mining loop finished-- " << std::endl;
 
     //  std::string solutionString  = CUDASolver::bytesToString( solutionBytes );
     //   cout << solutionString;
