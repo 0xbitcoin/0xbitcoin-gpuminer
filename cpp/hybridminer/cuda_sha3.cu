@@ -104,7 +104,7 @@ __device__ int compare_hash( unsigned char *target, unsigned char *hash, int len
 __device__ void keccak( const unsigned char *message, int message_len, unsigned char *output, int output_len )
 {
   uint64_t state[25];
-  uint8_t temp_message[144];
+  uint8_t *temp_message = (uint8_t *)message;
   const int rsize = 136;
   const int rsize_byte = 17;
 
@@ -126,62 +126,10 @@ __device__ void keccak( const unsigned char *message, int message_len, unsigned 
 
   for( int i = 0; i < 24; i++ )
   {
-    // Theta
-    // for i = 0 to 5
-    //    C[i] = state[i] ^ state[i + 5] ^ state[i + 10] ^ state[i + 15] ^ state[i + 20];
-    /*
-    C[0] = state[0] ^ state[5] ^ state[10] ^ state[15] ^ state[20];
-    C[1] = state[1] ^ state[6] ^ state[11] ^ state[16] ^ state[21];
-    C[2] = state[2] ^ state[7] ^ state[12] ^ state[17] ^ state[22];
-    C[3] = state[3] ^ state[8] ^ state[13] ^ state[18] ^ state[23];
-    C[4] = state[4] ^ state[9] ^ state[14] ^ state[19] ^ state[24];
-    */
     unsigned int x;
     for (x = 0; x < 5; x++) {
       C[x] = state[x] ^ state[x + 5] ^ state[x + 10] ^ state[x + 15] ^ state[x + 20];
     }
-
-
-    // for i = 0 to 5
-    //     temp = C[(i + 4) % 5] ^ ROTL64(C[(i + 1) % 5], 1);
-    //     for j = 0 to 25, j += 5
-    //          state[j + i] ^= temp;
-    /*
-    temp = C[4] ^ ROTL64( C[1], 1 );
-    state[0] ^= temp;
-    state[5] ^= temp;
-    state[10] ^= temp;
-    state[15] ^= temp;
-    state[20] ^= temp;
-
-    temp = C[0] ^ ROTL64( C[2], 1 );
-    state[1] ^= temp;
-    state[6] ^= temp;
-    state[11] ^= temp;
-    state[16] ^= temp;
-    state[21] ^= temp;
-
-    temp = C[1] ^ ROTL64( C[3], 1 );
-    state[2] ^= temp;
-    state[7] ^= temp;
-    state[12] ^= temp;
-    state[17] ^= temp;
-    state[22] ^= temp;
-
-    temp = C[2] ^ ROTL64( C[4], 1 );
-    state[3] ^= temp;
-    state[8] ^= temp;
-    state[13] ^= temp;
-    state[18] ^= temp;
-    state[23] ^= temp;
-
-    temp = C[3] ^ ROTL64( C[0], 1 );
-    state[4] ^= temp;
-    state[9] ^= temp;
-    state[14] ^= temp;
-    state[19] ^= temp;
-    state[24] ^= temp;
-    */
     D[0] = ROTL64(C[1], 1) ^ C[4];
     D[1] = ROTL64(C[2], 1) ^ C[0];
     D[2] = ROTL64(C[3], 1) ^ C[1];
@@ -405,11 +353,10 @@ __global__ __launch_bounds__( TPB50, 2 )
 void gpu_mine( unsigned char * init_message, unsigned char *challenge_hash, char * device_solution, int *d_done, const unsigned char * hash_prefix, int now, unsigned long long cnt, unsigned int threads )
 {
   uint32_t thread = blockDim.x * blockIdx.x + threadIdx.x;
-  unsigned char message[84];
-  memcpy(message, init_message, 84);
-
+  unsigned char message[144];
   int str_len = 84;
 
+  memcpy(message, init_message, 84);
   int len = 0;
   for( len = 0; len < 52; len++ )
   {
@@ -433,11 +380,22 @@ void gpu_mine( unsigned char * init_message, unsigned char *challenge_hash, char
     unsigned char output[output_len];
     keccak( message, str_len, output, output_len );
 
-    if( compare_hash( &challenge_hash[0], &output[0], output_len ) )
+    int i = 0;
+    for( i = 0; i < 32; i++ )
     {
+      if( output[i] != challenge_hash[i] )break;
+    }
+    if( (unsigned char)( output[i] ) < (unsigned char)( challenge_hash[i] )){
       if( d_done[0] != 1 )
       {
         d_done[0] = 1;
+        memcpy(message, init_message, 84);
+        int len = 0;
+        for( len = 0; len < 52; len++ )
+        {
+          message[len] = hash_prefix[len];
+        }
+        (uint64_t&)message[52] = nounce;
         memcpy( device_solution, message, str_len );
       }
       return;
