@@ -1,5 +1,5 @@
 // magic numbers we need to tune
-#define INTENSITY 26
+#define INTENSITY 28
 // magic numbers we need to tune
 #include <process.h>
 
